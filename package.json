@@ -2,8 +2,10 @@
   "name": "formations",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://lendle.github.io/formations",
   "dependencies": {
     "d3": "^5.9.2",
+    "gh-pages": "^2.0.1",
     "lodash": "^4.17.11",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
@@ -21,6 +23,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
