@@ -1,0 +1,14 @@
+text {
+    font: 18px helvetica;
+}
+
+.grips {
+    fill: none;
+    stroke: black;
+    stroke-width: 2px;
+}
+
+.slot circle{
+    fill: lightblue;
+    stroke: darkblue;
+}
