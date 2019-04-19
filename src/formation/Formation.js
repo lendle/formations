@@ -14,6 +14,9 @@ export default class Formation {
     this.planeify()
   }
   
+  /**
+   * number of slots in formation
+   */
   get slots() {
     return this.components.reduce((acc, c) => acc + c.slots, 0)
   }
