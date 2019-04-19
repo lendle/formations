@@ -2,7 +2,9 @@ import {PI, TAU} from '../constants'
 
 // polar coordinate from origin (center of base)
 export default class Polar {
-    constructor(radius, theta) {
+  radius: number;
+  theta: number;
+    constructor(radius: number, theta: number) {
       this.radius=radius
       this.theta=Polar.unspin(theta)
     }
@@ -12,7 +14,7 @@ export default class Polar {
     }
     
     //https://math.stackexchange.com/questions/1365622/adding-two-polar-vectors
-    plus(other) {
+    plus(other: Polar) {
       const {radius: r1, theta: t1} = this
       const {radius: r2, theta: t2} = other
       return new Polar(
@@ -21,28 +23,28 @@ export default class Polar {
       )
     }
     
-    minus(other) {
+    minus(other: Polar) {
       return this.plus(other.rotate(PI))
     }
     
-    rotate(theta) {
+    rotate(theta: number) {
       return new Polar(this.radius, this.theta + theta)
     }
     
     // distance from other point
-    distanceFrom(other) {
+    distanceFrom(other: Polar) {
       return this.minus(other).radius
     }
     
-    angleFrom(other) {
+    angleFrom(other: Polar) {
       return this.minus(other).theta
     }
     
-    angleTo(other) {
+    angleTo(other: Polar) {
       return other.minus(this).theta
     }
     
-    scale(s) {
+    scale(s: number) {
       return new Polar(this.radius * s, this.theta)
     }
     
@@ -63,7 +65,7 @@ export default class Polar {
     }
     
     // map theta back to [0, 2PI)
-    static unspin(theta) {
+    static unspin(theta: number) {
       const t = Math.floor(theta / (2 * PI))
       return theta - (t * 2 * PI)
     }
