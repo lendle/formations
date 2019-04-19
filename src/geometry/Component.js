@@ -5,11 +5,12 @@ import {range} from 'd3'
 
 export default class Component {
   
-    constructor(slots, extraSlotProps) {
+    constructor(slots, slotNumOffset, extraSlotProps) {
       if (slots < 0) {
         throw new Error(`slots should be non-negative, was ${slots}`)
       }
       this.slots=slots
+      this.slotNumOffset = slotNumOffset
       
       if (_.isFunction(extraSlotProps)) {
         this.extraSlotProps = [extraSlotProps]
@@ -44,6 +45,7 @@ export default class Component {
         {},//always start with a fresh object
         _.isObject(extraProps) ? extraProps: {},
         {
+          slotNum: this.slotNumOffset + slot,
           offset: this.position(),
           position: this.slotPosition(slot),
           dockAngle: this.dockAngle(),

@@ -120,25 +120,23 @@ export default function buildFormation(slots, baseSize) {
         const slotsToFill = slotsPerGroup + (groupNum < groupsWithExtraSlot ? 1 : 0)
         const isPod = left.c === right.c //left and right docking on same component is a pod, else bridge
         const totalSlotsInGroup = isPod? 5 : 3
-        //slotNumFun computes the global slotNum property in the formation for slot number s in this component
-        const slotNumFun = (extra=0) => s => ({slotNum: s + //this slot's index within component
-                                               slotsInRing(completeRings) + //number of slots in prior rings
-                                               slotsPerGroup * groupNum + //number of slots in prior groups in this ring
-                                               Math.min(groupsWithExtraSlot, groupNum) + //an extra slot per prior group, up to groupsWithExtraSlot
-                                               extra //0 by default, or number of slots in previous whacker, if needed
-                                 })
+
+        const priorSlots = slotsInRing(completeRings) + //number of slots in prior rings
+                           slotsPerGroup * groupNum + //number of slots in prior groups in this ring
+                           Math.min(groupsWithExtraSlot, groupNum) //an extra slot per prior group, up to groupsWithExtraSlot
+       
         if (slotsToFill === totalSlotsInGroup) { //if we have to fill the whole group, it's a pod
-          return [new Round(totalSlotsInGroup, slotNumFun(), left, right)]
+          return [new Round(totalSlotsInGroup, priorSlots, undefined, left, right)]
         } else {
           //whackers
           const leftHandSlots = Math.floor(slotsToFill/2)
           const rightHandSlots = leftHandSlots + slotsToFill % 2 //if odd number, right hand whacker gets the extra
           const whackers = []
           if (leftHandSlots > 0) {
-            whackers.push(new Whacker(leftHandSlots, slotNumFun(rightHandSlots), left, "left"))
+            whackers.push(new Whacker(leftHandSlots, priorSlots + rightHandSlots, undefined, left, "left"))
           }
           if (rightHandSlots > 0) {
-            whackers.push(new Whacker(rightHandSlots, slotNumFun(), right, "right"))
+            whackers.push(new Whacker(rightHandSlots, priorSlots, undefined, right, "right"))
           }
           return whackers
         }

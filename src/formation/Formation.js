@@ -9,7 +9,6 @@ export default class Formation {
   constructor(components, planes, config) {
     this.components = components
     this.planes = planes
-    this.config = config
     this.check()
     this.planeify()
   }

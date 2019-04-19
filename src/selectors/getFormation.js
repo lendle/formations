@@ -6,6 +6,7 @@ import Formation from "../formation/Formation";
 import buildFormation from "../formation/buildFormation";
 
 const countFilledSlots = filledPlanes => filledPlanes.reduce((s, {filledSlots}) => s+filledSlots, 0)
+
 /**
  * takes planes with slots available and returns array {plane: (plane position), filledSlots: number of slots filled}
  * lead plane will always have at least `baseSize` slots filled

@@ -9,8 +9,8 @@ export default class Round extends Component {
       - c: component
       - s: slot index
     */
-    constructor(slots, extraSlotProps, left, right) {
-      super(slots, extraSlotProps)
+    constructor(slots, slotNumOffset, extraSlotProps, left, right) {
+      super(slots, slotNumOffset, extraSlotProps)
       this.left = left
       this.right = right
       this.firstRun = true

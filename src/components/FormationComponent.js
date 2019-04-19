@@ -145,8 +145,11 @@ export default class FormationComponent extends React.Component {
 
         const s =(Math.min(this.height(), this.width())/2)/((r+0.5))/94
         
-        this.svg.transition(t).call(this.zoom.scaleTo, s)
-        this.svg.transition(t).call(this.zoom.translateTo, 0,0) //recenters on update
+        // d3.zoomIdentity.translate()
+        const recenter = d3.zoomTransform(this.svg)
+            .translate(this.width()/2, this.height()/2)
+            .scale(s)
+        this.svg.transition(t).call(this.zoom.transform, recenter)
         
     }
 
@@ -169,7 +172,7 @@ export default class FormationComponent extends React.Component {
             .on("zoom", () => this.zoomed())
         
         this.svg.call(this.zoom) //allows user zoom
-                .call(this.zoom.translateBy, this.width() / 2, this.height() / 2) //translates to center
+                // .call(this.zoom.translateBy, this.width() / 2, this.height() / 2) //translates to center
 
         
     

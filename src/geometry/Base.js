@@ -4,7 +4,7 @@ import { PI, TAU } from "../constants";
 
 export default class Base extends Component {
     constructor(slots, extraSlotProps, rotation = 3 * PI / 2) {
-        super(slots, extraSlotProps)
+        super(slots, 0, extraSlotProps)
         this._rotation = rotation
     }
 
