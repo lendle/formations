@@ -104,10 +104,19 @@ export default class Formation {
     //takes a scoreFun that takes a slotNum and plane, 
     //and converts it to a function that takes i, j for i, j in [0, unslotted.length)
     //for use with lap()
-    const cost = (scoreFun) => (i, j) => {
-      const slotNum = unslotted[i]
-      const plane = planeArray[j]
-      return scoreFun(slotNum, plane)
+    const cost = (scoreFun) => {
+      const memo = new Map()
+      return (i, j) => {
+        const key = `${i}.${j}`
+        
+        if (!memo.has(key)) {
+          const slotNum = unslotted[i]
+          const plane = planeArray[j]
+          memo.set(key, scoreFun(slotNum, plane))
+        }
+        
+        return memo.get(key)
+      }
     }
     
     const assignments = lap(unslotted.length, cost(angleScore)).row
