@@ -3,8 +3,10 @@ import Component from "./Component";
 import { PI, TAU } from "../constants";
 
 export default class Base extends Component {
-    constructor(slots, extraSlotProps, rotation = 3 * PI / 2) {
-        super(slots, 0, extraSlotProps)
+    
+    _rotation: number;
+    constructor(slots: number, rotation = 3 * PI / 2) {
+        super(slots, 0)
         this._rotation = rotation
     }
 
@@ -28,7 +30,11 @@ export default class Base extends Component {
         return TAU / (this.slots * 2)
     }
 
-    buildOrder(slot) {
+    maxBuildOrder(): number {
+        return 1
+    }
+
+    buildOrder(slot: number) {
         this.checkSlot(slot)
         return 1
     }

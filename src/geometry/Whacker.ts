@@ -2,7 +2,15 @@ import Component from "./Component";
 import Round from "./Round";
 import Polar from "./Polar";
 
+interface Dock {
+  c: Component
+  s: number
+}
+
 export default class Whacker extends Component {
+  dock: Dock;
+  hand: string;
+  _prrd: any;
 
     /*
     slots - 
@@ -11,8 +19,8 @@ export default class Whacker extends Component {
   
     modeled as part of a pod (Round docked on one person) with slots * 2 + 1 slots
     */
-    constructor(slots, slotNumOffset, extraSlotProps, dock, hand) {
-      super(slots, slotNumOffset, extraSlotProps)
+    constructor(slots: number, slotNumOffset: number, dock: Dock, hand: string) {
+      super(slots, slotNumOffset)
       this.dock = dock
       
       if (hand !== "left" && hand !== "right" )  throw new Error("Hand should be 'left' or 'right'")
@@ -61,12 +69,13 @@ export default class Whacker extends Component {
       return this._prrd
     }
     
-    buildOrder(slot) { 
+    maxBuildOrder(){
+      return this.dock.c.maxBuildOrder() + this.slots
+    }
+
+    buildOrder(slot: number) { 
       this.checkSlot(slot)
-      const waiting = this.dock.c.buildOrder()
-      if (slot === undefined) {
-        return waiting + this.slots
-      }
+      const waiting = this.dock.c.maxBuildOrder()
       return waiting + (this.hand === "left"? this.slots - slot : slot + 1)
     }
     

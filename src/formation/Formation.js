@@ -3,12 +3,13 @@ import _ from 'lodash'
 import { PI } from "../constants";
 import lap from "./lap";
 import approxeq from "./approxeq";
-import Base from "../geometry/Base";
+import Base from "../geometry/Base.ts";
 
 export default class Formation {
   constructor(components, planes, config) {
     this.components = components
     this.planes = planes
+    this.config = config
     this.check()
     this.planeify()
   }

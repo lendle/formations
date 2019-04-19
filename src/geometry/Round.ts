@@ -2,15 +2,24 @@ import { PI, TAU } from "../constants";
 import Component from "./Component";
 import Polar from "./Polar";
 
+interface Dock {
+  c: Component
+  s: number
+}
+
 export default class Round extends Component {
+  left: Dock;
+  right: Dock;
+  firstRun: boolean;
+  _prrd: any;
     /*
     left and right are left hand and right hand docks. 
     Should be an with properties
       - c: component
       - s: slot index
     */
-    constructor(slots, slotNumOffset, extraSlotProps, left, right) {
-      super(slots, slotNumOffset, extraSlotProps)
+    constructor(slots: number, slotNumOffset: number, left: Dock, right: Dock) {
+      super(slots, slotNumOffset)
       this.left = left
       this.right = right
       this.firstRun = true
@@ -36,7 +45,7 @@ export default class Round extends Component {
     slots - number of slots in this component
     // parentCentroid - centroid of parent component, or center of formation. Used to pick the orien
     */
-    static _positionRadiusRotationDockAngle(leftDockPosition, rightDockPosition, slots, 
+    static _positionRadiusRotationDockAngle(leftDockPosition: Polar, rightDockPosition: Polar, slots: number, 
                                              parentCentroid = new Polar(0,0)) {
   
       const dockDistance = leftDockPosition.distanceFrom(rightDockPosition)
@@ -71,12 +80,14 @@ export default class Round extends Component {
       return this.prrd.dockAngle
     }
   
-    buildOrder(slot) { 
+    maxBuildOrder() {
+      return Math.max(this.left.c.maxBuildOrder(), this.right.c.maxBuildOrder()) + Math.ceil(this.slots/2)
+    }
+
+    buildOrder(slot: number) { 
       this.checkSlot(slot)
-      const waiting = Math.max(this.left.c.buildOrder(), this.right.c.buildOrder())
-      if (slot === undefined) {
-        return waiting + Math.ceil(this.slots/2)
-      }
+      const waiting = Math.max(this.left.c.maxBuildOrder(), this.right.c.maxBuildOrder())
+      
       //build from the ends
       return waiting + Math.min(slot + 1, this.slots - slot)
     }
@@ -85,14 +96,14 @@ export default class Round extends Component {
     // with length of the remaining curve part = s
     // and length of flat bit = d
     // I think it's O(-log(eps))
-    static __computeRadiusTheta(s, d, eps = Math.sqrt(Number.EPSILON)) {
+    static __computeRadiusTheta(s: number, d: number, eps = Math.sqrt(Number.EPSILON)) {
       if (d < 0 || d > s) {
         console.error(`d: ${d}, s: ${s}`)
         throw new Error("d must be in [0, s]")
       }
       var iters = 0
       //try picking theta between lower and upper
-      function iter(lower=0, upper=PI) {
+      function iter(lower=0, upper=PI): number {
         if (iters >= 100) {
           throw new Error("didn't converge")
         }

@@ -1,7 +1,7 @@
 import _ from 'lodash'
-import Round from '../geometry/Round';
-import Whacker from '../geometry/Whacker';
-import Base from '../geometry/Base';
+import Round from '../geometry/Round.ts';
+import Whacker from '../geometry/Whacker.ts';
+import Base from '../geometry/Base.ts';
 
 /**
  * Builds a formation using the following rules until we run out of slots
@@ -126,17 +126,17 @@ export default function buildFormation(slots, baseSize) {
                            Math.min(groupsWithExtraSlot, groupNum) //an extra slot per prior group, up to groupsWithExtraSlot
        
         if (slotsToFill === totalSlotsInGroup) { //if we have to fill the whole group, it's a pod
-          return [new Round(totalSlotsInGroup, priorSlots, undefined, left, right)]
+          return [new Round(totalSlotsInGroup, priorSlots, left, right)]
         } else {
           //whackers
           const leftHandSlots = Math.floor(slotsToFill/2)
           const rightHandSlots = leftHandSlots + slotsToFill % 2 //if odd number, right hand whacker gets the extra
           const whackers = []
           if (leftHandSlots > 0) {
-            whackers.push(new Whacker(leftHandSlots, priorSlots + rightHandSlots, undefined, left, "left"))
+            whackers.push(new Whacker(leftHandSlots, priorSlots + rightHandSlots, left, "left"))
           }
           if (rightHandSlots > 0) {
-            whackers.push(new Whacker(rightHandSlots, priorSlots, undefined, right, "right"))
+            whackers.push(new Whacker(rightHandSlots, priorSlots, right, "right"))
           }
           return whackers
         }
@@ -145,5 +145,5 @@ export default function buildFormation(slots, baseSize) {
       return addRings([...rings, nextRing])
     }
 
-    return _.flatten(addRings([new Base(baseSize, s => ({slotNum: s}))]))
+    return _.flatten(addRings([new Base(baseSize)]))
   }

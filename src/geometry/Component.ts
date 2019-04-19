@@ -3,31 +3,26 @@ import _ from 'lodash'
 
 import {range} from 'd3'
 
-export default class Component {
+export default abstract class Component {
+  slots: number;
+  slotNumOffset: number;
+  extraSlotProps: Function[];
   
-    constructor(slots, slotNumOffset, extraSlotProps) {
+    constructor(slots: number, slotNumOffset: number) {
       if (slots < 0) {
         throw new Error(`slots should be non-negative, was ${slots}`)
       }
       this.slots=slots
       this.slotNumOffset = slotNumOffset
+      this.extraSlotProps = []          
       
-      if (_.isFunction(extraSlotProps)) {
-        this.extraSlotProps = [extraSlotProps]
-      } else if (_.isArray(extraSlotProps)) {
-        this.extraSlotProps = extraSlotProps
-      } else if (extraSlotProps === undefined) {
-        this.extraSlotProps = []          
-      } else {
-        throw new Error('extraSlotProps should be a function, array, or undefined/null')
-      }
     }
   
-    checkSlot(slot) {
+    checkSlot(slot: number) {
       if (slot < 0 || slot >= this.slots) throw new Error(`slot should be in [0, ${this.slots}), was ${slot}`)
     }
   
-    slotData(slot) {
+    slotData(slot: number) {
       this.checkSlot(slot)
   
       const thisComponent = this
@@ -41,17 +36,14 @@ export default class Component {
         console.error(`Extra props for slot ${slot} couldn't be constructed, ignoring. Was: `, extraProps)
       }
       
-      return Object.assign(
-        {},//always start with a fresh object
-        _.isObject(extraProps) ? extraProps: {},
-        {
+      return {
+          ...(_.isObject(extraProps) ? extraProps: {}),
           slotNum: this.slotNumOffset + slot,
           offset: this.position(),
           position: this.slotPosition(slot),
           dockAngle: this.dockAngle(),
-          id: slot,
           buildOrder: this.buildOrder(slot)
-        })
+        }
     }
   
     allSlotData() {
@@ -59,7 +51,7 @@ export default class Component {
     }
   
     //returns position of slot *relative to position of component*
-    slotPosition(s, offset=false) {
+    slotPosition(s: number, offset=false) {
       this.checkSlot(s)
       const pos = new Polar(this.radius(),
                             this.rotation() - 2 * s * this.dockAngle())
@@ -67,27 +59,30 @@ export default class Component {
     }
   
     //returns position of left hand of slot *relative to center of formation*
-    dockPosition(s) {
+    dockPosition(s: number) {
       this.checkSlot(s)
       return this.slotPosition(s)
         .rotate(-this.dockAngle())
         .plus(this.position())
     }
     
+    
+    abstract maxBuildOrder() : number
+
     //should return build order for slot, or if slot is not defined, return build order for last slot
-    buildOrder(slot) { throw new Error("build order not implemented") }
+    abstract buildOrder(slot: any): number
     
     //returns radius of this component
-    radius() { throw new Error("radius not implemented") }
+    abstract radius(): number
   
     //returns center of this component
-    position() { throw new Error("position not implemented") }
+    abstract position(): Polar
   
     //returns rotation in theta of where to place first slot
-    rotation() { throw new Error("rotation not implemented") }
+    abstract rotation(): number
   
     //returns angle between slot position and dock position, i.e. half of wingspan angle
-    dockAngle() { throw new Error("dockAngle not implemented") }
+    abstract dockAngle(): number
   }
 
   
