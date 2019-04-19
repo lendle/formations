@@ -3,16 +3,33 @@ import Round from '../geometry/Round';
 import Whacker from '../geometry/Whacker';
 import Base from '../geometry/Base';
 
+/**
+ * Builds a formation using the following rules until we run out of slots
+ *    1) Start with the base
+ *    2) Add first pods on every other base slot, starting with the slot going up jump run moving left
+ *    3) Add second pods on first pods
+ *    4) If base size > 4, build bridges between frist pods
+ *    5) If there are bridges, build 2nd pods on bridges
+ *    6) Build pods on each pod line on out to infinity!
+ * 
+ * If there are not enough slots to complete a ring of pods/bridges, then build whackers
+ * 
+ * @param {Number} slots slots in this formation
+ * @param {Number} baseSize
+ * @returns an array of Components
+ */
 export default function buildFormation(slots, baseSize) {
-    // const baseSize = parseInt(mutable mbaseSize)
-    // const slots = parseInt(mutable mslots)
-    
-    //ring 0 = base,
-    //ring 1 = 1st pods
-    //ring 2 = 2nd pods
-    //ring 3 = if baseSize > 4, bridges, otherwise just pods on out
-    //ring 4 = if baseSize > 4, then pods on bridges in ring 3, otherwise just pods on podLines
-    //ring 5... pod lines on out
+  
+    /**
+     * computes the number of slots in a ring
+     * @param {Number} ring index of ring, 
+     *         ring 0 = base,
+     *         ring 1 = 1st pods
+     *         ring 2 = 2nd pods
+     *         ring 3 = if baseSize > 4, bridges, otherwise just pods on out
+     *         ring 4 = if baseSize > 4, then pods on bridges in ring 3, otherwise just pods on podLines
+     *         ring 5... pod lines on out
+     */
     const slotsInRing = (ring) => {
       const podLines = Math.round(baseSize/2)
       const bridges = podLines > 2
@@ -24,7 +41,10 @@ export default function buildFormation(slots, baseSize) {
       return slotsInRing(4) + (ring - 4) * (bridges ? 5 * podLines : 5 * baseSize)
     }
    
-    //gets dock positions for next ring given currently filled rings
+    /**
+     * gets dock positions for next ring given currently filled rings
+     * @param rings an array of rings, 0th starting at base and going out 
+     */
     const nextDockPositions = (rings) => {
       if (rings.length > 10) {
         throw new Error("somethings fucky")
@@ -74,20 +94,23 @@ export default function buildFormation(slots, baseSize) {
       throw new Error("mmm")
     }
     
+    /**
+     * this takes an array of rings starting with at least the Base, and
+     * adds rings until all slots are included
+     * @param {*} rings array of rings. (a ring is an array of components)
+     */
     const addRings = (rings) => {
       const completeRings = rings.length - 1
       
-      // if (slotsInRing(completeRings) !== _.flatten(rings).map(c => c.slots).reduce((acc, x) => acc + x, 0)){
-      //   console.log({completeRings, slotsInRing: slotsInRing(completeRings), rings})
-      // }
-      const nextRingSlots = Math.min(slots, slotsInRing(completeRings + 1)) - 
-                            slotsInRing(completeRings)
+      //compute slots in next ring
+      const nextRingSlots = Math.min(slots, slotsInRing(completeRings + 1)) - slotsInRing(completeRings)
       
-      if (nextRingSlots <= 0) return rings
+      if (nextRingSlots <= 0) return rings //we're done
       
       const dockPositions = nextDockPositions(rings)
+
+      // here a 'group' is either a pod, or, if there are less than 5 slots, two whackers
       const slotGroups = dockPositions.length
-  
       
       const slotsPerGroup = Math.floor(nextRingSlots/slotGroups)
       const groupsWithExtraSlot = nextRingSlots % slotGroups
@@ -96,20 +119,20 @@ export default function buildFormation(slots, baseSize) {
         //slots in this group
         const slotsToFill = slotsPerGroup + (groupNum < groupsWithExtraSlot ? 1 : 0)
         const isPod = left.c === right.c //left and right docking on same component is a pod, else bridge
-        const totalSlots = isPod? 5 : 3
-        const slotNumFun = (extra=0) => s => ({slotNum: s + 
-                                               slotsInRing(completeRings) + 
-                                               slotsPerGroup * groupNum +
-                                               Math.min(groupsWithExtraSlot, groupNum) +
-                                               extra
+        const totalSlotsInGroup = isPod? 5 : 3
+        //slotNumFun computes the global slotNum property in the formation for slot number s in this component
+        const slotNumFun = (extra=0) => s => ({slotNum: s + //this slot's index within component
+                                               slotsInRing(completeRings) + //number of slots in prior rings
+                                               slotsPerGroup * groupNum + //number of slots in prior groups in this ring
+                                               Math.min(groupsWithExtraSlot, groupNum) + //an extra slot per prior group, up to groupsWithExtraSlot
+                                               extra //0 by default, or number of slots in previous whacker, if needed
                                  })
-        // const priorSlots =  + totalSlots * groupNum//todo
-        if (slotsToFill === totalSlots) {
-          return [new Round(totalSlots, slotNumFun(), left, right)]
+        if (slotsToFill === totalSlotsInGroup) { //if we have to fill the whole group, it's a pod
+          return [new Round(totalSlotsInGroup, slotNumFun(), left, right)]
         } else {
           //whackers
           const leftHandSlots = Math.floor(slotsToFill/2)
-          const rightHandSlots = leftHandSlots + slotsToFill % 2 //maybe one extra
+          const rightHandSlots = leftHandSlots + slotsToFill % 2 //if odd number, right hand whacker gets the extra
           const whackers = []
           if (leftHandSlots > 0) {
             whackers.push(new Whacker(leftHandSlots, slotNumFun(rightHandSlots), left, "left"))
@@ -120,8 +143,9 @@ export default function buildFormation(slots, baseSize) {
           return whackers
         }
       })
+      //recurse, add more rings to this prior plus this ring
       return addRings([...rings, nextRing])
     }
+
     return _.flatten(addRings([new Base(baseSize, s => ({slotNum: s}))]))
-    
   }
