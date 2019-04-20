@@ -62,10 +62,10 @@ export default abstract class Component {
         .plus(this.position())
     }
     
-    
+    // return build order for last slot to build
     abstract maxBuildOrder() : number
 
-    //should return build order for slot, or if slot is not defined, return build order for last slot
+    //should return build order for slot
     abstract buildOrder(slot: number): number
     
     //returns radius of this component

@@ -14,7 +14,8 @@ type FilledPlane = {
     filledSlots: number
 }
 
-type PlaneConfig = {
+//todo move me
+export type PlaneConfig = {
     plane: PlanePosition
     type: string
     slotting: string
@@ -112,6 +113,7 @@ const filledPlanes = (slots: number, baseSize: number, planesConfig: PlaneConfig
 
 class PlaneImpl extends AbstractSlotCollection<PlaneSlot> implements Plane {
 
+
     position: PlanePosition;
     filledSlots: number;
 
@@ -121,9 +123,9 @@ class PlaneImpl extends AbstractSlotCollection<PlaneSlot> implements Plane {
         this.filledSlots = filledSlots
     }
 
-    get allSlots(): PlaneSlot[] {
+    protected computeSlots(): PlaneSlot[] {
         return []
-    };
+    }
 
     get theta() {
         switch (this.position) {
@@ -137,6 +139,6 @@ class PlaneImpl extends AbstractSlotCollection<PlaneSlot> implements Plane {
     }
 }
 
-export default (slots: number, baseSize: number, planesConfig: PlaneConfig[]) => 
+export default (slots: number, baseSize: number, planesConfig: PlaneConfig[]): Plane[] => 
     filledPlanes(slots, baseSize, planesConfig)
         .map(({plane, filledSlots}) => new PlaneImpl(plane, filledSlots))

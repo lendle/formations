@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import './FormationComponent.css'
 
 import * as d3 from 'd3'
-import Formation from '../formation/Formation.ts';
+// import { Formation, Plane, Slot } from '../formation/interfaces'
 
 const SCALE_FACTOR = 80
 
@@ -84,9 +84,19 @@ const transitionSlot = (g, fill, label, oldData) => {
 
 export default class FormationComponent extends React.Component {
     showFormation() {
-        const { formation, viewConfig: { colorBy, numberBy } } = this.props
+        const { formation, 
+            planes,
+            slots,
+            viewConfig: { colorBy, numberBy } } = this.props
 
-        const slotData = formation.allSlotData()
+            const slotData = slots.map(({formationSlotId, planeId}) => ({
+                slotNum: formationSlotId,
+                ...formation.slots[formationSlotId],
+                plane: planes[planeId].position
+            }))
+
+
+        // const slotData = formation.allSlotData()
 
         const oldData = d3.local()
 
@@ -201,6 +211,8 @@ export default class FormationComponent extends React.Component {
 
 }
 FormationComponent.propTypes = {
-    formation: PropTypes.instanceOf(Formation),
+    formation: PropTypes.object.isRequired,
+    planes: PropTypes.array.isRequired,
+    slots: PropTypes.array.isRequired,
     viewConfig: PropTypes.object
 }

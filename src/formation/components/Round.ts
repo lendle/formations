@@ -1,6 +1,6 @@
-import { PI, TAU } from "../constants";
+import { PI, TAU } from "../../constants";
 import Component from "./Component";
-import Polar from "./Polar";
+import Polar from "../../geometry/Polar";
 
 interface Dock {
   c: Component

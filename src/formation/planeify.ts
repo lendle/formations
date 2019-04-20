@@ -32,19 +32,6 @@ export default function planeify(formation: Formation, planes: Plane[]): { forma
 
     //using linear assignment problem formulation
 
-    const unslotted = Array.from(formation.slots.keys())
-        .filter(formationSlotId => ! slotted.flat().includes(formationSlotId))
-
-    // planeArray is an array of planeIds, repeated for the number of slots to fill in that plane
-    const planeArray = planes.flatMap((plane, planeId) => {
-        const remainigToFill = plane.filledSlots - slotted[planeId].length
-        return (Array(remainigToFill) as number[]).fill(planeId)
-    })
-
-    if (planeArray.length !== unslotted.length) {
-        throw new Error("planeArray and unslotted have diff lenghts")
-    }
-
     const angleScore = (slotId: number, planeId: number) => {
         const slot = formation.slots[slotId]
         const plane = planes[planeId]
@@ -72,10 +59,30 @@ export default function planeify(formation: Formation, planes: Plane[]): { forma
     //   }
 
 
+
+    //get an array of formationSlotId that are not already in slotted
+    const unslotted = Array.from(formation.slots.keys())
+    .filter(formationSlotId => ! slotted.flat().includes(formationSlotId))
+
+    // planeArray is an array of planeIds, repeated for the number of slots to fill in that plane
+    const planeArray = planes.flatMap((plane, planeId) => {
+        const remainigToFill = plane.filledSlots - slotted[planeId].length
+        return (Array(remainigToFill) as number[]).fill(planeId)
+    })
+
+
     //takes a scoreFun that takes a slotId and planeId, 
-    //and converts it to a function that takes i, j for i, j in [0, unslotted.length)
+    //and converts it to a function that takes i, j for i, j in [0, number of unslotted people)
     //for use with lap()
     const cost = (scoreFun: (slotId: number, planeId: number) => number) => {
+
+        
+
+        if (planeArray.length !== unslotted.length) {
+            throw new Error("planeArray and unslotted have diff lenghts")
+        }
+
+        //memoize scoreFun
         const memo = new Map<string, number>()
         return (i: number, j: number): number => {
             const key = `${i}.${j}`

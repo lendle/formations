@@ -1,6 +1,6 @@
 import Component from "./Component";
 import Round from "./Round";
-import Polar from "./Polar";
+import Polar from "../../geometry/Polar";
 
 interface Dock {
   c: Component
