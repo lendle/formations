@@ -1,6 +1,6 @@
-import Polar from "./Polar";
+import Polar from "../../geometry/Polar";
 import Component from "./Component";
-import { PI, TAU } from "../constants";
+import { PI, TAU } from "../../constants";
 
 export default class Base extends Component {
     

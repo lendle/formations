@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import './FormationComponent.css'
 
 import * as d3 from 'd3'
-import Formation from '../formation/Formation';
+import Formation from '../formation/Formation.ts';
 
 const SCALE_FACTOR = 80
 

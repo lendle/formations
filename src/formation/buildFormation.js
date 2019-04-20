@@ -1,7 +1,9 @@
 import _ from 'lodash'
-import Round from '../geometry/Round.ts';
-import Whacker from '../geometry/Whacker.ts';
-import Base from '../geometry/Base.ts';
+import Round from './components/Round.ts';
+import Whacker from './components/Whacker.ts';
+import Base from './components/Base.ts';
+import FormationImpl from './FormationImpl';
+
 
 /**
  * Builds a formation using the following rules until we run out of slots
@@ -145,5 +147,5 @@ export default function buildFormation(slots, baseSize) {
       return addRings([...rings, nextRing])
     }
 
-    return _.flatten(addRings([new Base(baseSize)]))
+    return new FormationImpl(_.flatten(addRings([new Base(baseSize)])))
   }

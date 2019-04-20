@@ -2,7 +2,7 @@ import { createSelector } from "reselect";
 import { PlaneTypes, SlottingOptions } from "../actions";
 import getSlotOptions, { getPlanesConfig } from "./getSlotOptions";
 import Plane from "../formation/Plane";
-import Formation from "../formation/Formation";
+import Formation from "../formation/Formation.ts";
 import buildFormation from "../formation/buildFormation";
 
 const countFilledSlots = filledPlanes => filledPlanes.reduce((s, {filledSlots}) => s+filledSlots, 0)

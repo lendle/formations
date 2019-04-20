@@ -1,7 +1,7 @@
-import Polar from "./Polar"
-import _ from 'lodash'
+import Polar from "../../geometry/Polar"
 
 import {range} from 'd3'
+import { FormationSlot } from "../interfaces";
 
 export default abstract class Component {
   slots: number;
@@ -22,7 +22,7 @@ export default abstract class Component {
       if (slot < 0 || slot >= this.slots) throw new Error(`slot should be in [0, ${this.slots}), was ${slot}`)
     }
   
-    slotData(slot: number) {
+    slotData(slot: number): FormationSlot {
       this.checkSlot(slot)
   
       const thisComponent = this
@@ -31,14 +31,10 @@ export default abstract class Component {
           ...obj, 
           ...f.call(thisComponent, slot, obj)
         }), {})
-  
-      if (!_.isObject(extraProps)) {
-        console.error(`Extra props for slot ${slot} couldn't be constructed, ignoring. Was: `, extraProps)
-      }
       
       return {
-          ...(_.isObject(extraProps) ? extraProps: {}),
-          slotNum: this.slotNumOffset + slot,
+          ...extraProps,
+          id: this.slotNumOffset + slot,
           offset: this.position(),
           position: this.slotPosition(slot),
           dockAngle: this.dockAngle(),
@@ -46,7 +42,7 @@ export default abstract class Component {
         }
     }
   
-    allSlotData() {
+    allSlots(): FormationSlot[] {
       return range(this.slots).map(slot => this.slotData(slot))
     }
   
@@ -70,7 +66,7 @@ export default abstract class Component {
     abstract maxBuildOrder() : number
 
     //should return build order for slot, or if slot is not defined, return build order for last slot
-    abstract buildOrder(slot: any): number
+    abstract buildOrder(slot: number): number
     
     //returns radius of this component
     abstract radius(): number
