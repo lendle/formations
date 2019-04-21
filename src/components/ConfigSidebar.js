@@ -1,12 +1,12 @@
 import React from 'react'
 import { Icon, Menu, Sidebar, Form, Divider, Button } from 'semantic-ui-react'
 import PropTypes from 'prop-types'
-import { SlottingOptions, ColorOptions, NumberOptions, PlaneTypes } from '../actions';
+import { SlottingOptions, ColorOptions, NumberOptions, PlaneType } from '../store/actions';
 
 const PlaneMenu = ({ planeInfo, onPlaneTypeSet, onPlaneSlotsSet, onPlaneSlottingSet }) => {
     const { plane, label, slotting, type, slots } = planeInfo
 
-    const { NONE, OTTER, SKYVAN } = PlaneTypes
+    const { NONE, OTTER, SKYVAN } = PlaneType
     const { SPLIT, FILL } = SlottingOptions
 
     return <Menu.Item>

@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Dropdown, Icon } from "semantic-ui-react";
 import { getSlotOptions } from '../../selectors';
-import { formationSlots, baseSize } from '../../actions';
+import { formationSlots, baseSize } from '../../store/actions';
 
 const trigger = slots => <span>
     <Icon name='users' /> <strong>Slots:</strong> {slots}

@@ -1,19 +1,16 @@
-import { connect } from 'react-redux'
-import FormationComponent from './FormationComponent';
-import { getFormation, getPlanes, getAllSlots } from '../selectors';
+import { connect } from "react-redux"
+import FormationComponent from "./FormationComponent"
+import { getFormation, getPlanes, getAllSlots } from "../selectors"
+import { AppState } from "../store/reducer"
 
-//todo any
-const mapStateToProps = (state: any) => ({
-    formation: getFormation(state),
-    planes: getPlanes(state),
-    slots: getAllSlots(state),
-    viewConfig: state.viewConfig
+const mapStateToProps = (state: AppState) => ({
+  formation: getFormation(state),
+  planes: getPlanes(state),
+  slots: getAllSlots(state),
+  viewConfig: state.viewConfig
 })
 
-
-export default connect(
-    mapStateToProps
-)(FormationComponent)
+export default connect(mapStateToProps)(FormationComponent)
 
 // console.log({debounceRender})
 

@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 
 import ConfigSidebar from './ConfigSidebar'
-import { formationSlots, setPlaneType, setPlaneSlots, setPlaneSlotting, setColorBy, setNumberBy } from '../actions';
+import { formationSlots, setPlaneType, setPlaneSlots, setPlaneSlotting, setColorBy, setNumberBy } from '../store/actions';
 import { getSlotOptions } from '../selectors';
 
 

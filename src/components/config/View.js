@@ -1,11 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Dropdown, Icon } from "semantic-ui-react";
-import { ColorOptions, setColorBy, setNumberBy, NumberOptions } from '../../actions';
-
-
-
-
+import { ColorOption, NumberOption } from '../../store/types';
+import { setColorBy, setNumberBy } from '../../store/actions';
 
 
 
@@ -15,16 +12,16 @@ const View = props => {
     const trigger = <span><Icon name='eye' /> <strong>View</strong></span>
 
     const colorBys = [
-        { opt: ColorOptions.DEFAULT, desc: 'Default' },
-        { opt: ColorOptions.PLANE, desc: 'Plane' },
-        { opt: ColorOptions.BUILD_ORDER, desc: 'Build Order' }
+        { opt: ColorOption.DEFAULT, desc: 'Default' },
+        { opt: ColorOption.PLANE, desc: 'Plane' },
+        { opt: ColorOption.BUILD_ORDER, desc: 'Build Order' }
     ].map(({ opt, desc }) =>
         <Dropdown.Item key={opt} onClick={() => onSetColorBy(opt)} active={viewConfig.colorBy === opt} >{desc}</Dropdown.Item>)
 
 
     const numberBys = [
-        { opt: NumberOptions.SLOT_NUM, desc: 'Slot Number' },
-        { opt: NumberOptions.BUILD_ORDER, desc: 'Build Order' }
+        { opt: NumberOption.SLOT_NUM, desc: 'Slot Number' },
+        { opt: NumberOption.BUILD_ORDER, desc: 'Build Order' }
     ].map(({opt, desc}) => 
         <Dropdown.Item key={opt} onClick={() => onSetNumberBy(opt)} active={viewConfig.numberBy === opt} >{desc}</Dropdown.Item>)
     

@@ -1,65 +1,46 @@
-import Polar from "../geometry/Polar";
-import PlanePosition from "./PlanePosition";
+import Polar from "../geometry/Polar"
+import PlanePosition from "./PlanePosition"
 
-export type NumDict<V> = { [index:number]:V }
+export type NumDict<V> = { [index: number]: V }
 
 export interface BaseSlot {}
 
 export interface Slot extends BaseSlot {
-    formationSlotId: number
-    planeId: number
-    planeSlotId: number
+  formationSlotId: number
+  planeId: number
+  planeSlotId: number
 }
 
 export interface FormationSlot extends BaseSlot {
-    offset: Polar //offset of component
-    position: Polar //position relative to center of component
-    dockAngle: number // angle of half of the wingspan of the slot
-    buildOrder: number //build order of slot
-    [x: string]: any //allow arbitrary extra props for now
+  offset: Polar //offset of component
+  position: Polar //position relative to center of component
+  dockAngle: number // angle of half of the wingspan of the slot
+  buildOrder: number //build order of slot
 }
 
 export interface PlaneSlot extends BaseSlot {
-    x: number
-    y: number
-// PlaneSlot
-//     - slotId PK
-//     - details to compute score w/ formation slot
-//     - drawing details - 
+  x: number
+  y: number
 }
-
-
 
 export interface SlotCollection<S extends BaseSlot> {
-    slots: S[]
+  slots: S[]
 }
 
-
-
-
 export interface Formation extends SlotCollection<FormationSlot> {
-    baseIds: number[]
-    radius: number
+  baseIds: number[]
+  radius: number
 }
 
 export interface Plane extends SlotCollection<PlaneSlot> {
-    position: PlanePosition
-    theta: number
-    filledSlots: number
-    // Plane
-//     - planeId
-//     - position info, detials to compute plane scores etc
-//     - idx planeSlotId -> planeslot
-
+  position: PlanePosition
+  theta: number
+  filledSlots: number
+  // Plane
+  //     - planeId
+  //     - position info, detials to compute plane scores etc
+  //     - idx planeSlotId -> planeslot
 }
-
-
-
-
-
-
-
-
 
 // 1) build formation, get slotId -> formationSlotId
 // 2) get planes, slotId -> planeId

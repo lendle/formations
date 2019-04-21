@@ -1,14 +1,14 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import App from './components/App';
-import * as serviceWorker from './serviceWorker';
-import { composeWithDevTools } from 'redux-devtools-extension';
-
-
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { Provider } from 'react-redux'
 import { createStore } from 'redux'
+import { composeWithDevTools } from 'redux-devtools-extension'
+import App from './components/App'
+import * as serviceWorker from './serviceWorker'
+import reducer from './store/reducer'
 
-import reducer from './reducer'
+
+
 
 const store = createStore(
     reducer, 

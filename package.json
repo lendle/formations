@@ -21,13 +21,14 @@
     "react-redux": "^7.0.1",
     "redux": "^4.0.1",
     "reselect": "^4.0.0",
-    "semantic-ui-react": "^0.86.0",
-    "typescript": "^3.4.4"
+    "semantic-ui-react": "^0.86.0"
   },
   "devDependencies": {
     "react-scripts": "2.1.8",
     "redux-devtools-extension": "^2.13.8",
-    "tslint": "^5.16.0"
+    "tslint": "^5.16.0",
+    "typescript": "^3.4.4",
+    "typescript-tslint-plugin": "^0.3.1"
   },
   "scripts": {
     "start": "react-scripts start",
