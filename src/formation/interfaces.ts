@@ -20,6 +20,8 @@ export interface FormationSlot extends BaseSlot {
 }
 
 export interface PlaneSlot extends BaseSlot {
+    x: number
+    y: number
 // PlaneSlot
 //     - slotId PK
 //     - details to compute score w/ formation slot
@@ -37,6 +39,7 @@ export interface SlotCollection<S extends BaseSlot> {
 
 export interface Formation extends SlotCollection<FormationSlot> {
     baseIds: number[]
+    radius: number
 }
 
 export interface Plane extends SlotCollection<PlaneSlot> {

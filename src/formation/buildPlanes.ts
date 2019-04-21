@@ -1,8 +1,7 @@
 import { PlaneTypes, SlottingOptions } from "../actions";
-import AbstractSlotCollection from "./AbstractSlotCollection";
-import { SlotCollection, PlaneSlot, Plane } from "./interfaces";
+import { Plane } from "./interfaces";
 import PlanePosition from "./PlanePosition";
-import { PI } from "../constants";
+import PlaneImpl from "./planes/PlaneImpl";
 
 type UnfilledPlane = {
     plane: PlanePosition
@@ -111,33 +110,7 @@ const filledPlanes = (slots: number, baseSize: number, planesConfig: PlaneConfig
     )
 }
 
-class PlaneImpl extends AbstractSlotCollection<PlaneSlot> implements Plane {
 
-
-    position: PlanePosition;
-    filledSlots: number;
-
-    constructor(position: PlanePosition, filledSlots: number) {
-        super()
-        this.position = position
-        this.filledSlots = filledSlots
-    }
-
-    protected computeSlots(): PlaneSlot[] {
-        return []
-    }
-
-    get theta() {
-        switch (this.position) {
-            case PlanePosition.LEAD:
-                return PI / 2
-            case PlanePosition.LT:
-                return 7 * PI / 6
-            case PlanePosition.RT:
-                return 11 * PI / 6
-        }
-    }
-}
 
 export default (slots: number, baseSize: number, planesConfig: PlaneConfig[]): Plane[] => 
     filledPlanes(slots, baseSize, planesConfig)

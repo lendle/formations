@@ -137,6 +137,7 @@ const addRings = (slots: number, baseSize: number, rings: Ring[]): Ring[] => {
 }
 
 class FormationImpl extends AbstractSlotCollection<FormationSlot> implements Formation {
+
   
   components: Component[];
   constructor(components: Component[]) {
@@ -153,6 +154,10 @@ class FormationImpl extends AbstractSlotCollection<FormationSlot> implements For
       .allSlots().map(s => s.id)
   }
 
+  get radius(): number {
+    const slotRadi = this.slots.map(({position, offset}) => position.plus(offset).radius)
+    return Math.max(...slotRadi)
+  }
 }
 
 /**

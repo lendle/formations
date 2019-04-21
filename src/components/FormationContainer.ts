@@ -1,6 +1,5 @@
 import { connect } from 'react-redux'
 import FormationComponent from './FormationComponent';
-// const debounceRender = require('react-debounce-render')
 import { getFormation, getPlanes, getAllSlots } from '../selectors';
 
 //todo any
