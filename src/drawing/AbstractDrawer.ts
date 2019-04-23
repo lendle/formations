@@ -1,16 +1,13 @@
-import Drawer from "./interfaces";
+import Drawer from "./interfaces"
 
-export default abstract class AbstractDrawer<Args> implements Drawer<Args> {
-  
-    protected grp!: d3.Selection<SVGGElement, {}, null, undefined>;
+export default abstract class AbstractDrawer<Args, ReturnArgs>
+  implements Drawer<Args, ReturnArgs> {
+  group!: d3.Selection<SVGGElement, {}, null, undefined>
 
-    setGrp(grp: d3.Selection<SVGGElement, {}, null, undefined>): void {
-        this.grp = grp
-    }
+  withGroup(group: d3.Selection<SVGGElement, {}, null, undefined>): this {
+    this.group = group
+    return this
+  }
 
-    abstract draw(args: Args): void
-    
-    update(args: Args): void {
-        this.draw(args)
-    }
+  abstract draw(args: Args): ReturnArgs
 }

@@ -22,6 +22,12 @@ export enum NumberOption {
   BUILD_ORDER = "BUILD_ORDER"
 }
 
+export enum ShowOption {
+  FORMATION = "Formation",
+  PLANES = "Planes",
+  BOTH = "Formation & planes"
+}
+
 export enum FormationType {
   HD = "HD",
   SD = "SD"
@@ -44,6 +50,7 @@ export interface FormationConfigState {
 export interface ViewConfigState {
   colorBy: ColorOption
   numberBy: NumberOption
+  show: ShowOption
 }
 
 export const SET_PLANE_SLOTTING = "SET_PLANE_SLOTTING"
@@ -101,4 +108,13 @@ interface SetNumberByAction {
   type: typeof SET_NUMBER_BY
   numberBy: NumberOption
 }
-export type ViewConfigActionTypes = SetColorByAction | SetNumberByAction
+
+export const SET_SHOW = "SET_SHOW"
+interface SetShowAction {
+  type: typeof SET_SHOW
+  show: ShowOption
+}
+export type ViewConfigActionTypes =
+  | SetColorByAction
+  | SetNumberByAction
+  | SetShowAction

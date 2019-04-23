@@ -1,112 +1,173 @@
-import { Plane, Slot } from "../formation/interfaces";
-import AbstractDrawer from "./AbstractDrawer";
-import * as d3 from 'd3'
-import PlanePosition from "../formation/PlanePosition";
-
-
-interface PlanesArgs {
-    slots: Slot[]
-    planes: Plane[]
-}
+import { Plane, Slot, PlaneSlot, Formation } from "../formation/interfaces"
+import AbstractDrawer from "./AbstractDrawer"
+import * as d3 from "d3"
+import PlanePosition from "../formation/PlanePosition"
+import { ViewConfigState, ShowOption } from "../store/types"
+import Polar from "../geometry/Polar"
+import { PI, SCALE_FACTOR, TAU } from "../constants"
 
 type XY = {
-    x: number
-    y: number
+  x: number;
+  y: number;
 }
 
-const w = 1.5
-const l = 6
 const x = (d: XY) => d.x * 40
 const y = (d: XY) => d.y * 40
 
+const w = 1.5
+const l = 6
+const otterPoints = [
+  { x: -w, y: -l },
+  { x: w, y: -l },
+  { x: w, y: l },
+  { x: -w, y: l },
+  { x: -w, y: -l }
+]
 
+const doorPoints = [{ x: -w, y: l - 6 }, { x: -w, y: l - 2 }]
 
-const otterPoints = [{ x: -w, y: -l },
-{ x: w, y: -l },
-{ x: w, y: l },
-{ x: -w, y: l },
-{ x: -w, y: -l }]
-
-const doorPoints = [{ x: -w, y: l - 6 },
-{ x: -w, y: l - 2 }]
-
-const floaters = d3.range(7).map(y => ({ x: -2, y: l - 0.5 - y }))
-const inDoor = d3.range(3).map(y => ({ x: -1, y: l - 3 - y }))
-const inDoor2 = d3.range(2).map(y => ({ x: 0, y: l - 3.5 - y }))
-const divers = d3.range(5).flatMap(y => [{ x: -0.5, y: -0.5 - y }, { x: 0.5, y: -0.5 - y }])
-const otterSlots = [...floaters, ...inDoor, ...inDoor2, ...divers]
-
-const line = d3.line<XY>().x(x).y(y)
+const line = d3
+  .line<XY>()
+  .x(x)
+  .y(y)
 
 /**
- * 
+ *
  * @param g a selection (of g)
  * @param fill function mapping slotData to a fill color
  * @param label function mapping slotData to a label
  */
-const addPlane = (g: d3.Selection<SVGGElement, Plane, SVGGElement, {}>, positionToOffest: Map<PlanePosition, number>) => {
-    g.append('path')
-        .attr("stroke", "black")
-        .attr("d", line(otterPoints)!)
-
-    g.append('path')
-        .attr("stroke", "black")
+const addPlane = (
+  g: d3.Transition<SVGGElement, Plane, SVGGElement, {}>,
+  positionToCoordinate: Map<PlanePosition, Polar>
+) => {
+  g.call(gg =>
+    gg.attr(
+      "transform",
+      ({ position }) =>
+        `translate(${positionToCoordinate.get(position)!.x}, ${
+          positionToCoordinate.get(position)!.y
+        }) scale(1)`
+    )
+  )
+    .selection()
+    .call(gg => gg.append("path").attr("d", line(otterPoints)!))
+    .call(gg =>
+      gg
+        .append("path")
         .attr("stroke-width", 3)
         .attr("d", line(doorPoints)!)
-
-    const slotsG = g.selectAll<SVGGElement, XY>('circle')
-        .data(({ filledSlots }) => otterSlots.slice(0, filledSlots))
-
-    slotsG.enter()
-        .append('circle')
-        .attr('cx', x)
-        .attr('cy', y)
-        .attr('r', 16)
-
-    slotsG.exit()
-        .remove()
-
-    g.append('text')
+    )
+    .call(gg =>
+      gg
+        .append("text")
         .attr("text-anchor", "middle")
         .attr("dominant-baseline", "central")
         .attr("x", 0)
         .attr("y", -220)
         .text(({ position }) => position)
-        .attr('fill', 'black')
-
-
-    g.attr("transform", ({ position }) => `translate(${positionToOffest.get(position)}, 0)`)
-
-}
-
-export default class PlanesDrawer extends AbstractDrawer<PlanesArgs> {
-
-
-    draw({ planes }: PlanesArgs): void {
-        const positions = planes.map(p => p.position)
-        const positionToOffest = new Map(
-            [PlanePosition.LT, PlanePosition.LEAD, PlanePosition.RT]
-                .filter(p => positions.includes(p))
-                .map((p, idx, all) => [p, idx * 300 - ((all.length - 1) * 150)])
+    )
+    .selectAll<SVGGElement, PlaneSlot>("g")
+    .data(({ filledSlots, slots }) => slots.slice(0, filledSlots))
+    .join(enter =>
+      enter
+        .append("g")
+        .call(slotG =>
+          slotG
+            .append("circle")
+            .attr("cx", x)
+            .attr("cy", y)
+            .attr("r", 16)
         )
-
-        const planeGrps = this.grp.selectAll<SVGGElement, Plane>("g.plane")
-            .data<Plane>(planes, plane => plane.position)
-
-        planeGrps.call(addPlane, positionToOffest)
-        planeGrps.enter()
-            .append("g")
-            .attr("class", "plane")
-            .call(addPlane, positionToOffest)
-
-        planeGrps.exit().remove()
+        .call(slotG =>
+          slotG
+            .append("text")
+            .attr("text-anchor", "middle")
+            .attr("dominant-baseline", "central")
+            .attr("x", x)
+            .attr("y", y)
+            .text(d => d.jr)
+        )
+    )
+}
+type PlanesAndCoordinates = {
+  planes: Plane[];
+  positionToCoordinate: Map<PlanePosition, Polar>;
+}
+const planesAndCoordinates = ({
+  planes,
+  viewConfig: { show },
+  formation: { radius }
+}: PlanesArgs): PlanesAndCoordinates => {
+  switch (show) {
+    case ShowOption.FORMATION:
+      return { planes: [], positionToCoordinate: new Map() }
+    case ShowOption.PLANES: {
+      const positions = planes.map(p => p.position)
+      const positionToCoordinate = new Map(
+        [PlanePosition.LT, PlanePosition.LEAD, PlanePosition.RT]
+          .filter(p => positions.includes(p))
+          .map((p, idx, all) => {
+            const offset = idx * 300 - (all.length - 1) * 150
+            return [p, new Polar(Math.abs(offset), offset >= 0 ? 0 : PI)]
+          })
+      )
+      return { planes, positionToCoordinate }
     }
+    case ShowOption.BOTH: {
+      const positionToCoordinate = new Map(
+        planes.map(({ position, theta }) => {
+          return [
+            position,
+            new Polar(
+              (radius + 3) * SCALE_FACTOR,
+              position === PlanePosition.LEAD ? TAU / 12 : theta
+            )
+          ]
+        })
+      )
+      return { planes, positionToCoordinate }
+    }
+  }
 }
 
+interface PlanesArgs {
+  slots: Slot[]
+  planes: Plane[]
+  formation: Formation
+  viewConfig: ViewConfigState
+}
+export default class PlanesDrawer extends AbstractDrawer<PlanesArgs, void> {
+  draw(args: PlanesArgs) {
+    const { planes, positionToCoordinate } = planesAndCoordinates(args)
 
+    const planeGrps = this.group
+      .selectAll<SVGGElement, Plane>("g.plane")
+      .data<Plane>(planes, plane => plane.position)
 
+    planeGrps
+      .transition()
+      .duration(1000)
+      .call(addPlane, positionToCoordinate)
+
+    planeGrps
+      .enter()
+      .append("g")
+      .attr("class", "plane")
+      .attr("transform", "translate(0,0) scale(0)")
+      .transition()
+      .duration(1000)
+      .call(addPlane, positionToCoordinate)
+
+    planeGrps
+      .exit()
+      .transition()
+      .duration(1000)
+      .attr("transform", "translate(0,0) scale(0)")
+      .remove()
+  }
+}
 
 //     protected computeSlots(): PlaneSlot[] {
-
 
 //     }

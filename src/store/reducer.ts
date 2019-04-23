@@ -19,7 +19,9 @@ import {
   SET_BASE_SIZE,
   FormationConfigActionTypes,
   PlanesConfigActionTypes,
-  ViewConfigActionTypes
+  ViewConfigActionTypes,
+  SET_SHOW,
+  ShowOption
 } from "./types"
 
 const { LEAD, LT, RT } = PlanePosition
@@ -63,6 +65,7 @@ const planesConfig = (
       case SET_PLANE_SLOTS:
         return { ...p, slots: action.slots }
       case SET_PLANE_TYPE:
+        console.log({ action })
         return { ...p, type: action.planeType }
       default:
         return p
@@ -87,7 +90,11 @@ const formationConfig = (
 }
 
 const viewConfig = (
-  state = { colorBy: ColorOption.PLANE, numberBy: NumberOption.SLOT_NUM },
+  state = {
+    colorBy: ColorOption.PLANE,
+    numberBy: NumberOption.SLOT_NUM,
+    show: ShowOption.FORMATION
+  },
   action: ViewConfigActionTypes
 ): ViewConfigState => {
   switch (action.type) {
@@ -95,6 +102,8 @@ const viewConfig = (
       return { ...state, colorBy: action.colorBy }
     case SET_NUMBER_BY:
       return { ...state, numberBy: action.numberBy }
+    case SET_SHOW:
+      return { ...state, show: action.show }
     default:
       return state
   }

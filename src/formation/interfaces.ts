@@ -19,8 +19,13 @@ export interface FormationSlot extends BaseSlot {
 }
 
 export interface PlaneSlot extends BaseSlot {
-  x: number
-  y: number
+  x: number //for plotting
+  y: number //for plotting
+  jr: number // jump run score. 0 for ~ base, positive for before base (floaters), negative for after base (divers)
+  // PlaneSlot
+  //     - slotId PK
+  //     - details to compute score w/ formation slot
+  //     - drawing details -
 }
 
 export interface SlotCollection<S extends BaseSlot> {

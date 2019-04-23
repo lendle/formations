@@ -14,7 +14,9 @@ import {
   FormationType,
   FormationConfigActionTypes,
   PlanesConfigActionTypes,
-  ViewConfigActionTypes
+  ViewConfigActionTypes,
+  ShowOption,
+  SET_SHOW
 } from "./types"
 import PlanePosition from "../formation/PlanePosition"
 
@@ -70,4 +72,9 @@ export const setColorBy = (colorBy: ColorOption): ViewConfigActionTypes => ({
 export const setNumberBy = (numberBy: NumberOption): ViewConfigActionTypes => ({
   type: SET_NUMBER_BY,
   numberBy
+})
+
+export const setShow = (show: ShowOption): ViewConfigActionTypes => ({
+  type: SET_SHOW,
+  show
 })

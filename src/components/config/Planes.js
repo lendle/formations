@@ -3,15 +3,16 @@ import { connect } from 'react-redux'
 import { Dropdown, Icon } from "semantic-ui-react";
 import { PlaneType, Slotting } from '../../store/types';
 import { setPlaneType, setPlaneSlots } from '../../store/actions';
+import PlanePosition from '../../formation/PlanePosition';
 
 
 
 const PlaneMenu = ({ planeConfig, setters }) => {
-    const { plane, label, slotting, type, slots } = planeConfig
+    const { position, label, slotting, type, slots } = planeConfig
     const { onPlaneSlottingSet, onPlaneTypeSet, onPlaneSlotsSet } = setters
     const trigger = <div><strong>{label}</strong>: {type}{type !== PlaneType.NONE ? `, ${slots} slots, ${slotting === Slotting.FILL ? 'filled' : 'slotted evenly'}` : null}</div>
 
-    const types = plane === 'lead' ? [PlaneType.OTTER, PlaneType.SKYVAN] : [PlaneType.OTTER, PlaneType.SKYVAN, PlaneType.NONE]
+    const types = position === PlanePosition.LEAD ? [PlaneType.OTTER, PlaneType.SKYVAN] : [PlaneType.OTTER, PlaneType.SKYVAN, PlaneType.NONE]
 
     const { FILL, SPLIT } = Slotting
     const slottingDescriptions = {
@@ -26,14 +27,14 @@ const PlaneMenu = ({ planeConfig, setters }) => {
                 <Dropdown.Menu>
                     <Dropdown.Header>Type</Dropdown.Header>
                     {types.map(t =>
-                        <Dropdown.Item key={t} onClick={() => onPlaneTypeSet(plane, t)} active={type === t}>
+                        <Dropdown.Item key={t} onClick={() => onPlaneTypeSet(position, t)} active={type === t}>
                             {t}
                         </Dropdown.Item>)
                     }
                     <Dropdown.Divider />
                     <Dropdown.Header>Slotting</Dropdown.Header>
                     {slottings.map(s =>
-                        <Dropdown.Item key={s} onClick={() => onPlaneSlottingSet(plane, s)} active={slotting === s}>
+                        <Dropdown.Item key={s} onClick={() => onPlaneSlottingSet(position, s)} active={slotting === s}>
                             {slottingDescriptions[s]}
                         </Dropdown.Item>)
                     }
@@ -42,7 +43,7 @@ const PlaneMenu = ({ planeConfig, setters }) => {
                     <Dropdown.Item>
                         <span>0 </span>
                         <input type="range" value={slots} min={0} max={30}
-                            onChange={e => onPlaneSlotsSet(plane, parseInt(e.target.value))} />
+                            onChange={e => onPlaneSlotsSet(position, parseInt(e.target.value))} />
                         <span> {30}</span>
                     </Dropdown.Item>
                 </Dropdown.Menu>
@@ -60,7 +61,7 @@ const Planes = props => {
 
     return <Dropdown trigger={trigger} item>
         <Dropdown.Menu>
-            {planesConfig.map(planeConfig => <PlaneMenu key={planeConfig.plane} planeConfig={planeConfig} setters={setters} />)}
+            {planesConfig.map(planeConfig => <PlaneMenu key={planeConfig.position} planeConfig={planeConfig} setters={setters} />)}
         </Dropdown.Menu>
     </Dropdown>
 }

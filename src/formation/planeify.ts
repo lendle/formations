@@ -15,7 +15,6 @@ export default function planeify(
   formation: Formation,
   planes: Plane[]
 ): { formationSlotId: number; planeId: number }[] {
-  console.log({ planes })
   if (planes[0].position !== PlanePosition.LEAD) {
     throw new Error("lead plane should be first")
   }

@@ -1,7 +1,7 @@
 import { PlaneState, PlaneType, Slotting } from "../store/types"
 import { Plane } from "./interfaces"
 import PlanePosition from "./PlanePosition"
-import PlaneImpl from "./planes/PlaneImpl"
+import { planeFactory } from "./planes"
 
 type FilledPlane = {
   position: PlanePosition;
@@ -124,7 +124,14 @@ export default (
   slots: number,
   baseSize: number,
   planesConfig: PlaneState[]
-): Plane[] =>
-  filledPlanes(slots, baseSize, planesConfig).map(
-    ({ position, filledSlots }) => new PlaneImpl(position, filledSlots)
+): Plane[] => {
+  const slotsMap = new Map(
+    filledPlanes(slots, baseSize, planesConfig).map(
+      ({ position, filledSlots }) => [position, filledSlots]
+    )
   )
+
+  return planesConfig.map(({ position, type }) =>
+    planeFactory(position, slotsMap.get(position)!, type)
+  )
+}

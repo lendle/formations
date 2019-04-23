@@ -8,12 +8,13 @@ text {
     stroke-width: 2px;
 }
 
-.plane {
+.plane path,
+.plane circle {
     fill: none;
     stroke: black;
 }
 
-.slot circle{
+.slot circle {
     fill: lightblue;
-    stroke: darkblue;
+    stroke: black;
 }
