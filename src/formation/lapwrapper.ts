@@ -31,13 +31,21 @@ function lapwrapper<A, B>(
   scoreFun: (a: A, b: B) => number
 ): [A, B][] {
   if (as.length !== bs.length) {
-    throw new Error("idxList1 and idxList2 have diff lenghts")
+    throw new Error("as and bs have diff lenghts")
   }
-  const assignments = lap(as.length, cost(as, bs, scoreFun)).col
 
-  return Array.from(assignments).map((p: number, i: number) => {
-    const a = as[p]
-    const b = bs[i]
+  const result = lap(as.length, cost(as, bs, scoreFun))
+  // const assignments = result.col
+
+  // return Array.from(assignments).map((p: number, i: number) => {
+  //   const a = as[p]
+  //   const b = bs[i]
+  //   return [a, b]
+  // })
+
+  return Array.from(result.row).map((p: number, i: number) => {
+    const a = as[i]
+    const b = bs[p]
     return [a, b]
   })
 }

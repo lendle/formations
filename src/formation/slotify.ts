@@ -1,5 +1,6 @@
 import { PlaneAssignment, Formation, Plane, Slot } from "./interfaces"
 import lapwrapper from "./lapwrapper"
+import * as d3 from "d3"
 
 const slotPlane = (
   plane: Plane,
@@ -15,12 +16,9 @@ const slotPlane = (
 
     return Math.abs(jr) * reverseBuildOrder * 100 - slotJr * jr
   }
-
-  return lapwrapper(
-    formationSlotIds,
-    Array.from(new Array(plane.filledSlots).keys()),
-    score
-  ).map(([formationSlotId, planeSlotId]) => ({ formationSlotId, planeSlotId }))
+  return lapwrapper(formationSlotIds, d3.range(plane.filledSlots), score).map(
+    ([formationSlotId, planeSlotId]) => ({ formationSlotId, planeSlotId })
+  )
 }
 
 export default function slotify(

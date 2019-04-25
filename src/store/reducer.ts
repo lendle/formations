@@ -65,7 +65,6 @@ const planesConfig = (
       case SET_PLANE_SLOTS:
         return { ...p, slots: action.slots }
       case SET_PLANE_TYPE:
-        console.log({ action })
         return { ...p, type: action.planeType }
       default:
         return p

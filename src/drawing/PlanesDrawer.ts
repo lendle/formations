@@ -1,4 +1,10 @@
-import { Plane, Slot, PlaneSlot, Formation } from "../formation/interfaces"
+import {
+  Plane,
+  Slot,
+  PlaneSlot,
+  Formation,
+  FormationSlot
+} from "../formation/interfaces"
 import AbstractDrawer from "./AbstractDrawer"
 import * as d3 from "d3"
 import PlanePosition from "../formation/PlanePosition"
@@ -11,17 +17,22 @@ type XY = {
   y: number;
 }
 
+interface SlottedPlane {
+  plane: Plane
+  slots: Slot[]
+}
+
 const x = (d: XY) => d.x * 40
 const y = (d: XY) => d.y * 40
 
 const w = 1.5
 const l = 6
 const otterPoints = [
-  { x: -w, y: -l },
-  { x: w, y: -l },
+  { x: -w, y: -l - 1 },
+  { x: w, y: -l - 1 },
   { x: w, y: l },
   { x: -w, y: l },
-  { x: -w, y: -l }
+  { x: -w, y: -l - 1 }
 ]
 
 const doorPoints = [{ x: -w, y: l - 6 }, { x: -w, y: l - 2 }]
@@ -64,33 +75,54 @@ const addPlane = (
         .attr("text-anchor", "middle")
         .attr("dominant-baseline", "central")
         .attr("x", 0)
-        .attr("y", -220)
+        .attr("y", -260)
         .text(({ plane: { position } }) => position)
     )
-    .selectAll<SVGGElement, PlaneSlot>("g")
-    .data(({ plane, slots }) =>
-      slots.map(s => ({ ...s, ...plane.slots[s.planeSlotId] }))
+    .selectAll<SVGGElement, PlaneSlot & Slot>("g")
+    .data<PlaneSlot & Slot>(
+      ({ plane, slots }) =>
+        slots.map(s => ({
+          ...s,
+          ...plane.slots[s.planeSlotId]
+        })),
+      d => d.formationSlotId.toString()
     )
-    .join(enter =>
-      enter
-        .append("g")
-        .call(slotG =>
-          slotG
-            .append("circle")
-            .attr("cx", x)
-            .attr("cy", y)
-            .attr("r", 16)
-        )
-        .call(slotG =>
-          slotG
-            .append("text")
-            .attr("text-anchor", "middle")
-            .attr("dominant-baseline", "central")
-            .attr("x", x)
-            .attr("y", y)
-            // .text(d => d.jr)
-            .text(d => d.formationSlotId + 1)
-        )
+    .join(
+      enter =>
+        enter
+          .append("g")
+          .call(slotG =>
+            slotG
+              .append("circle")
+              .attr("cx", x)
+              .attr("cy", y)
+              .attr("r", 16)
+          )
+          .call(slotG =>
+            slotG
+              .append("text")
+              .attr("text-anchor", "middle")
+              .attr("dominant-baseline", "central")
+              .attr("x", x)
+              .attr("y", y)
+              // .text(d => d.jr)
+              .text(d => d.formationSlotId + 1)
+          ),
+      update =>
+        update
+          .call(update =>
+            update
+              .select("circle")
+              .attr("cx", x)
+              .attr("cy", y)
+          )
+          .call(update =>
+            update
+              .select("text")
+              .attr("x", x)
+              .attr("y", y)
+          ),
+      exit => exit.remove()
     )
 }
 type PlanesAndCoordinates = {
@@ -132,11 +164,6 @@ const planesAndCoordinates = ({
       return { planes, positionToCoordinate }
     }
   }
-}
-
-interface SlottedPlane {
-  plane: Plane
-  slots: Slot[]
 }
 
 interface PlanesArgs {

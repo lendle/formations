@@ -235,7 +235,6 @@ class FormationImpl extends AbstractSlotCollection<FormationSlot>
       return componentToWaiting.get(component)!
     }
     waiting(this.components[0])
-    console.log({ componentToWaiting })
     return this.components.flatMap(c => {
       return Array.from(new Array(c.slots).keys()).map(
         s => waiting(c) + c.maxBuildOrder() - c.buildOrder(s)

@@ -61,7 +61,7 @@ export class Otter extends AbstractPlane {
       .range(2)
       .map(y => ({ x: 0, y: l - 3.5 - y, jr: -y + this.jrOffset + -2 }))
     const divers = d3
-      .range(5)
+      .range(6)
       .flatMap(y => [
         { x: -0.5, y: -0.5 - y, jr: -2 * y + this.jrOffset - 5 },
         { x: 0.5, y: -0.5 - y, jr: -2 * y + this.jrOffset - 4 }

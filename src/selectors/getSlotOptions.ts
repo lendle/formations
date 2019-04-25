@@ -12,7 +12,7 @@ export const getFormationConfig = (state: AppState): FormationConfigState =>
 export const getPlanesConfig = (state: AppState): PlaneState[] =>
   state.planesConfig
 
-type SlotOptions = {
+export type SlotOptions = {
   slots: number;
   min: number;
   max: number;
