@@ -43,16 +43,28 @@ abstract class AbstractPlane extends AbstractSlotCollection<PlaneSlot>
  *  x
  */
 export class Otter extends AbstractPlane {
+  /**
+   * jrOffset determines which slot is considered 0 up or down jump run
+   * 3 is the 1st diver closet do the pilot just inside the door
+   * increase to the 'centeral' slot closer to the tail, decrease to move to cockpit
+   */
+  private jrOffset = 1
   protected computeSlots(): PlaneSlot[] {
     const l = 6
-    const floaters = d3.range(7).map(y => ({ x: -2, y: l - 0.5 - y, jr: -1 }))
-    const inDoor = d3.range(3).map(y => ({ x: -1, y: l - 3 - y, jr: 0 }))
-    const inDoor2 = d3.range(2).map(y => ({ x: 0, y: l - 3.5 - y, jr: 0 }))
+    const floaters = d3
+      .range(7)
+      .map(y => ({ x: -2, y: l - 0.5 - y, jr: -y + this.jrOffset + 8 }))
+    const inDoor = d3
+      .range(3)
+      .map(y => ({ x: -1, y: l - 3 - y, jr: -y + this.jrOffset + 1 }))
+    const inDoor2 = d3
+      .range(2)
+      .map(y => ({ x: 0, y: l - 3.5 - y, jr: -y + this.jrOffset + -2 }))
     const divers = d3
       .range(5)
       .flatMap(y => [
-        { x: -0.5, y: -0.5 - y, jr: y + 1 },
-        { x: 0.5, y: -0.5 - y, jr: y + 1 }
+        { x: -0.5, y: -0.5 - y, jr: -2 * y + this.jrOffset - 5 },
+        { x: 0.5, y: -0.5 - y, jr: -2 * y + this.jrOffset - 4 }
       ])
     return [...floaters, ...inDoor, ...inDoor2, ...divers]
   }

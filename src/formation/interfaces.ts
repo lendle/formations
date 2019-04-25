@@ -5,17 +5,24 @@ export type NumDict<V> = { [index: number]: V }
 
 export interface BaseSlot {}
 
-export interface Slot extends BaseSlot {
+export interface PlaneAssignment {
   formationSlotId: number
   planeId: number
+}
+
+export interface Slot extends BaseSlot, PlaneAssignment {
   planeSlotId: number
 }
 
-export interface FormationSlot extends BaseSlot {
+export interface ComponentSlot extends BaseSlot {
   offset: Polar //offset of component
   position: Polar //position relative to center of component
   dockAngle: number // angle of half of the wingspan of the slot
   buildOrder: number //build order of slot
+}
+
+export interface FormationSlot extends ComponentSlot {
+  reverseBuildOrder: number //max time to build downstream slots
 }
 
 export interface PlaneSlot extends BaseSlot {
@@ -50,5 +57,3 @@ export interface Plane extends SlotCollection<PlaneSlot> {
 // 1) build formation, get slotId -> formationSlotId
 // 2) get planes, slotId -> planeId
 // 3) get slotId -> planeSlotId
-
-export default null

@@ -1,10 +1,9 @@
-import _ from "lodash"
-import { Formation, Plane } from "./interfaces"
+import { Formation, Plane, PlaneAssignment } from "./interfaces"
 import PlanePosition from "./PlanePosition"
 import Polar from "../geometry/Polar"
 import { PI } from "../constants"
 import approxeq from "../util/approxeq"
-import lap from "./lap"
+import lapwrapper from "./lapwrapper"
 
 /**
  * Puts people in planes
@@ -14,7 +13,7 @@ import lap from "./lap"
 export default function planeify(
   formation: Formation,
   planes: Plane[]
-): { formationSlotId: number; planeId: number }[] {
+): PlaneAssignment[] {
   if (planes[0].position !== PlanePosition.LEAD) {
     throw new Error("lead plane should be first")
   }
@@ -98,13 +97,9 @@ export default function planeify(
     }
   }
 
-  const assignments = lap(unslotted.length, cost(angleScore)).row
+  const assignments = lapwrapper(unslotted, planeArray, angleScore)
 
-  assignments.forEach((p, i) => {
-    const planeId = planeArray[p]
-    const slotId = unslotted[i]
-    slotted[planeId].push(slotId)
-  })
+  assignments.forEach(([slotId, planeId]) => slotted[planeId].push(slotId))
 
   return slotted.flatMap((slotIds, planeId) =>
     slotIds.map(slotId => ({ formationSlotId: slotId, planeId }))

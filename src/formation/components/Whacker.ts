@@ -28,6 +28,10 @@ export default class Whacker extends Component {
     this.hand = hand
   }
 
+  parents() {
+    return [this.dock.c]
+  }
+
   //left hand dock position of the imaginary pod
   _left() {
     const { c, s } = this.dock
@@ -73,13 +77,12 @@ export default class Whacker extends Component {
   }
 
   maxBuildOrder() {
-    return this.dock.c.maxBuildOrder() + this.slots
+    return this.slots
   }
 
   buildOrder(slot: number) {
     this.checkSlot(slot)
-    const waiting = this.dock.c.maxBuildOrder()
-    return waiting + (this.hand === "left" ? this.slots - slot : slot + 1)
+    return this.hand === "left" ? this.slots - slot : slot + 1
   }
 
   position() {

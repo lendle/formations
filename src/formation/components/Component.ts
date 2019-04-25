@@ -1,7 +1,7 @@
 import Polar from "../../geometry/Polar"
 
 import { range } from "d3"
-import { FormationSlot } from "../interfaces"
+import { FormationSlot, ComponentSlot } from "../interfaces"
 
 export default abstract class Component {
   slots: number
@@ -20,18 +20,18 @@ export default abstract class Component {
       throw new Error(`slot should be in [0, ${this.slots}), was ${slot}`)
   }
 
-  slotData(slot: number): FormationSlot {
+  slotData(slot: number): ComponentSlot {
     this.checkSlot(slot)
 
     return {
       offset: this.position(),
       position: this.slotPosition(slot),
       dockAngle: this.dockAngle(),
-      buildOrder: this.buildOrder(slot)
+      buildOrder: this.buildOrder(slot) + this.waiting()
     }
   }
 
-  allSlots(): FormationSlot[] {
+  allSlots(): ComponentSlot[] {
     return range(this.slots).map(slot => this.slotData(slot))
   }
 
@@ -53,6 +53,16 @@ export default abstract class Component {
       .plus(this.position())
   }
 
+  //how long this component is waiting before building
+  waiting(): number {
+    return Math.max(
+      ...this.parents().map(
+        parent => parent.waiting() + parent.maxBuildOrder()
+      ),
+      0
+    )
+  }
+
   // return build order for last slot to build
   abstract maxBuildOrder(): number
 
@@ -70,4 +80,7 @@ export default abstract class Component {
 
   //returns angle between slot position and dock position, i.e. half of wingspan angle
   abstract dockAngle(): number
+
+  //components this component is docked
+  abstract parents(): Component[]
 }

@@ -1,9 +1,7 @@
-import { Formation, Plane, Slot } from "./interfaces";
-import planeify from "./planeify";
+import { Formation, Plane, Slot } from "./interfaces"
+import planeify from "./planeify"
+import slotify from "./slotify"
 
 export default (formation: Formation, planes: Plane[]): Slot[] => {
-    return planeify(formation, planes).map((slot) => ({
-        ...slot,
-        planeSlotId: 0
-    }))
+  return slotify(formation, planes, planeify(formation, planes))
 }

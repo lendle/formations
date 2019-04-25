@@ -1,4 +1,3 @@
-import _ from "lodash"
 import Round from "./components/Round"
 import Whacker from "./components/Whacker"
 import Base from "./components/Base"
@@ -62,10 +61,13 @@ const nextDockPositions = (
 
   if (rings.length === 1) {
     const base = rings[0][0]
-    return _.range(0, baseSize, 2).map(slot => ({
-      left: { c: base, s: slot },
-      right: { c: base, s: (slot + baseSize - 1) % baseSize }
-    }))
+
+    return Array.from(new Array(baseSize / 2).keys())
+      .map(s => s * 2)
+      .map(slot => ({
+        left: { c: base, s: slot },
+        right: { c: base, s: (slot + baseSize - 1) % baseSize }
+      }))
   }
   if (
     !bridges ||
@@ -90,7 +92,7 @@ const nextDockPositions = (
     // ring 3 is bridges if there are bridges
     const firstPods = rings[1]
     const numBridges = firstPods.length
-    return _.range(numBridges).map(bridgeNum => ({
+    return Array.from(new Array(numBridges).keys()).map(bridgeNum => ({
       left: { c: firstPods[(bridgeNum + 1) % numBridges], s: 0 },
       right: { c: firstPods[bridgeNum], s: 3 }
     }))
@@ -187,7 +189,10 @@ class FormationImpl extends AbstractSlotCollection<FormationSlot>
   }
 
   protected computeSlots(): FormationSlot[] {
-    return this.components.flatMap(c => c.allSlots())
+    const reverseBuildOrder = this.reverseBuildOrder()
+    return this.components
+      .flatMap(c => c.allSlots())
+      .map((s, idx) => ({ ...s, reverseBuildOrder: reverseBuildOrder[idx] }))
   }
 
   get baseIds(): number[] {
@@ -202,6 +207,40 @@ class FormationImpl extends AbstractSlotCollection<FormationSlot>
       ({ position, offset }) => position.plus(offset).radius
     )
     return Math.max(...slotRadi)
+  }
+
+  reverseBuildOrder() {
+    const parentToChildren = new Map(
+      this.components.map(component => [component, [] as Component[]])
+    )
+
+    this.components
+      .flatMap(child => child.parents().map(parent => ({ parent, child }))) //get all parent child pairs (many to many)
+      .forEach(({ parent, child }) =>
+        parentToChildren.get(parent)!.push(child)
+      )
+
+    const componentToWaiting = new Map<Component, number>()
+
+    const waiting = (component: Component): number => {
+      if (!componentToWaiting.has(component)) {
+        const children = parentToChildren.get(component)!
+        const numWaiting = Math.max(
+          ...children.map(child => waiting(child)! + child.maxBuildOrder()),
+          0
+        )
+
+        componentToWaiting.set(component, numWaiting)
+      }
+      return componentToWaiting.get(component)!
+    }
+    waiting(this.components[0])
+    console.log({ componentToWaiting })
+    return this.components.flatMap(c => {
+      return Array.from(new Array(c.slots).keys()).map(
+        s => waiting(c) + c.maxBuildOrder() - c.buildOrder(s)
+      )
+    })
   }
 }
 
@@ -225,6 +264,6 @@ export default function buildFormation(
   baseSize: number
 ): Formation {
   return new FormationImpl(
-    _.flatten(addRings(slots, baseSize, [[new Base(baseSize)]]))
+    addRings(slots, baseSize, [[new Base(baseSize)]]).flat()
   )
 }

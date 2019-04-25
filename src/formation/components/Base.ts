@@ -37,4 +37,8 @@ export default class Base extends Component {
     this.checkSlot(slot)
     return 1
   }
+
+  parents() {
+    return []
+  }
 }

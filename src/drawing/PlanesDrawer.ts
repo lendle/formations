@@ -38,13 +38,13 @@ const line = d3
  * @param label function mapping slotData to a label
  */
 const addPlane = (
-  g: d3.Transition<SVGGElement, Plane, SVGGElement, {}>,
+  g: d3.Transition<SVGGElement, SlottedPlane, SVGGElement, {}>,
   positionToCoordinate: Map<PlanePosition, Polar>
 ) => {
   g.call(gg =>
     gg.attr(
       "transform",
-      ({ position }) =>
+      ({ plane: { position } }) =>
         `translate(${positionToCoordinate.get(position)!.x}, ${
           positionToCoordinate.get(position)!.y
         }) scale(1)`
@@ -65,10 +65,12 @@ const addPlane = (
         .attr("dominant-baseline", "central")
         .attr("x", 0)
         .attr("y", -220)
-        .text(({ position }) => position)
+        .text(({ plane: { position } }) => position)
     )
     .selectAll<SVGGElement, PlaneSlot>("g")
-    .data(({ filledSlots, slots }) => slots.slice(0, filledSlots))
+    .data(({ plane, slots }) =>
+      slots.map(s => ({ ...s, ...plane.slots[s.planeSlotId] }))
+    )
     .join(enter =>
       enter
         .append("g")
@@ -86,7 +88,8 @@ const addPlane = (
             .attr("dominant-baseline", "central")
             .attr("x", x)
             .attr("y", y)
-            .text(d => d.jr)
+            // .text(d => d.jr)
+            .text(d => d.formationSlotId + 1)
         )
     )
 }
@@ -131,6 +134,11 @@ const planesAndCoordinates = ({
   }
 }
 
+interface SlottedPlane {
+  plane: Plane
+  slots: Slot[]
+}
+
 interface PlanesArgs {
   slots: Slot[]
   planes: Plane[]
@@ -141,9 +149,14 @@ export default class PlanesDrawer extends AbstractDrawer<PlanesArgs, void> {
   draw(args: PlanesArgs) {
     const { planes, positionToCoordinate } = planesAndCoordinates(args)
 
+    const slottedPlanes: SlottedPlane[] = planes.map((plane, id) => ({
+      plane,
+      slots: args.slots.filter(({ planeId }) => id === planeId)
+    }))
+
     const planeGrps = this.group
-      .selectAll<SVGGElement, Plane>("g.plane")
-      .data<Plane>(planes, plane => plane.position)
+      .selectAll<SVGGElement, SlottedPlane>("g.plane")
+      .data(slottedPlanes, sp => sp.plane.position)
 
     planeGrps
       .transition()

@@ -32,6 +32,10 @@ export default class Round extends Component {
     this.firstRun = true
   }
 
+  parents() {
+    return Array.from(new Set([this.left.c, this.right.c]))
+  }
+
   get prrd() {
     if (!this._prrd) {
       this._prrd = Round._positionRadiusRotationDockAngle(
@@ -90,21 +94,14 @@ export default class Round extends Component {
   }
 
   maxBuildOrder() {
-    return (
-      Math.max(this.left.c.maxBuildOrder(), this.right.c.maxBuildOrder()) +
-      Math.ceil(this.slots / 2)
-    )
+    return Math.ceil(this.slots / 2)
   }
 
   buildOrder(slot: number) {
     this.checkSlot(slot)
-    const waiting = Math.max(
-      this.left.c.maxBuildOrder(),
-      this.right.c.maxBuildOrder()
-    )
 
     //build from the ends
-    return waiting + Math.min(slot + 1, this.slots - slot)
+    return Math.min(slot + 1, this.slots - slot)
   }
 
   // computes radius and angle of cutoff for a circle with the side cut off

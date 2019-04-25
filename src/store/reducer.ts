@@ -93,7 +93,7 @@ const viewConfig = (
   state = {
     colorBy: ColorOption.PLANE,
     numberBy: NumberOption.SLOT_NUM,
-    show: ShowOption.FORMATION
+    show: ShowOption.BOTH
   },
   action: ViewConfigActionTypes
 ): ViewConfigState => {
