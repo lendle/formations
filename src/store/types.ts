@@ -1,37 +1,38 @@
 import PlanePosition from "../formation/PlanePosition"
 
 export enum Slotting {
-  SPLIT = "Split",
-  FILL = "Fill"
+  SPLIT,
+  FILL
 }
 
 export enum PlaneType {
-  NONE = "None",
-  OTTER = "Otter",
-  SKYVAN = "Skyvan"
+  NONE,
+  OTTER,
+  SKYVAN
 }
 
 export enum ColorOption {
-  DEFAULT = "DEFAULT",
-  PLANE = "PLANE",
-  BUILD_ORDER = "BUILD_ORDER",
-  RADIAL = "RADIAL"
+  DEFAULT,
+  PLANE,
+  BUILD_ORDER,
+  RADIAL
 }
 
 export enum NumberOption {
-  SLOT_NUM = "SLOT_NUM",
-  BUILD_ORDER = "BUILD_ORDER"
+  SLOT_NUM,
+  BUILD_ORDER
 }
 
 export enum ShowOption {
-  FORMATION = "Formation",
-  PLANES = "Planes",
-  BOTH = "Formation & planes"
+  FORMATION,
+  PLANES,
+  BOTH
 }
 
 export enum FormationType {
-  HD = "HD",
-  SD = "SD"
+  HD,
+  HD_ABOVE,
+  SD
 }
 
 export interface PlaneState {

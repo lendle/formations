@@ -3,6 +3,7 @@ import * as d3 from "d3"
 import PlanePosition from "../formation/PlanePosition"
 import { SCALE_FACTOR, TAU } from "../constants"
 import { BaseType } from "d3"
+import { ColorOption, NumberOption } from "../store/types"
 
 export type SlotDataFun = (d: SlotData) => any
 
@@ -37,16 +38,26 @@ const radialFill = ({ formationSlot }: SlotData) => {
   return d3.interpolateRainbow(theta)
 }
 
-export const FILL_FUNCTIONS: StringDict<SlotDataFun> = {
-  DEFAULT: () => null,
-  BUILD_ORDER: buildOrderFill,
-  PLANE: planeFill,
-  RADIAL: radialFill
+export const fillFunction = (colorBy: ColorOption): SlotDataFun => {
+  switch (colorBy) {
+    case ColorOption.BUILD_ORDER:
+      return buildOrderFill
+    case ColorOption.PLANE:
+      return planeFill
+    case ColorOption.RADIAL:
+      return radialFill
+    default:
+      return () => null
+  }
 }
 
-export const LABEL_FUNCTIONS: StringDict<SlotDataFun> = {
-  SLOT_NUM: (d: SlotData) => d.formationSlotId + 1,
-  BUILD_ORDER: (d: SlotData) => d.formationSlot.buildOrder
+export const labelFunction = (numberBy: NumberOption) => {
+  switch (numberBy) {
+    case NumberOption.BUILD_ORDER:
+      return (d: SlotData) => d.formationSlot.buildOrder
+    default:
+      return (d: SlotData) => d.formationSlotId + 1
+  }
 }
 
 // const arc = (d: SlotData) => arcFun(d)()

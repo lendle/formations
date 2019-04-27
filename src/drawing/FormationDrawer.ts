@@ -3,8 +3,6 @@ import * as d3 from "d3"
 import AbstractDrawer from "./AbstractDrawer"
 import { ViewConfigState, ShowOption } from "../store/types"
 import {
-  FILL_FUNCTIONS,
-  LABEL_FUNCTIONS,
   x,
   y,
   translate,
