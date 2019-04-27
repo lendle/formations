@@ -8,13 +8,22 @@ text {
     stroke-width: 2px;
 }
 
-.plane path,
-.plane circle {
-    fill: none;
-    stroke: black;
+.plane path {
+    fill: rgb(238, 238, 238);
+    stroke: black
 }
 
+/* .highlight circle {
+    fill: pink;
+    stroke-width: 4px;
+} */
+
+.plane circle {
+    stroke: black
+}
+
+
+
 .slot circle {
-    fill: lightblue;
     stroke: black;
 }

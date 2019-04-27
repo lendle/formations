@@ -2,16 +2,19 @@ import React from "react"
 import * as d3 from "d3"
 import "./FormationComponent.css"
 
-import { Formation, Plane, Slot } from "../formation/interfaces"
+import { Formation, Plane, SlotData } from "../formation/interfaces"
 import PlanesDrawer from "../drawing/PlanesDrawer"
 import { ViewConfigState } from "../store/types"
 import FormationDrawer from "../drawing/FormationDrawer"
+import { SlotDataFun } from "../drawing/slotdatafuns"
 
 interface FormationProps {
   formation: Formation
   planes: Plane[]
-  slots: Slot[]
+  slots: SlotData[]
   viewConfig: ViewConfigState
+  fill: SlotDataFun
+  label: SlotDataFun
 }
 export default class FormationComponent extends React.Component<
   FormationProps,
@@ -50,6 +53,7 @@ export default class FormationComponent extends React.Component<
       this.allGrp.append("g")
     )
     this.formationDrawer.draw(this.props)
+
     this.planesDrawer = new PlanesDrawer().withGroup(this.allGrp.append("g"))
     this.planesDrawer.draw(this.props)
   }

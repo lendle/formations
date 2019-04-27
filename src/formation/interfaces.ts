@@ -10,8 +10,13 @@ export interface PlaneAssignment {
   planeId: number
 }
 
-export interface Slot extends BaseSlot, PlaneAssignment {
+export interface SlotData {
+  formationSlotId: number
+  formationSlot: FormationSlot
+  planeId: number
+  plane: Plane
   planeSlotId: number
+  planeSlot: PlaneSlot
 }
 
 export interface ComponentSlot extends BaseSlot {
@@ -29,10 +34,6 @@ export interface PlaneSlot extends BaseSlot {
   x: number //for plotting
   y: number //for plotting
   jr: number // jump run score. 0 for ~ base, positive for before base (floaters), negative for after base (divers)
-  // PlaneSlot
-  //     - slotId PK
-  //     - details to compute score w/ formation slot
-  //     - drawing details -
 }
 
 export interface SlotCollection<S extends BaseSlot> {
@@ -48,12 +49,4 @@ export interface Plane extends SlotCollection<PlaneSlot> {
   position: PlanePosition
   theta: number
   filledSlots: number
-  // Plane
-  //     - planeId
-  //     - position info, detials to compute plane scores etc
-  //     - idx planeSlotId -> planeslot
 }
-
-// 1) build formation, get slotId -> formationSlotId
-// 2) get planes, slotId -> planeId
-// 3) get slotId -> planeSlotId

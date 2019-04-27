@@ -35,6 +35,19 @@ function lapwrapper<A, B>(
   }
 
   const result = lap(as.length, cost(as, bs, scoreFun))
+
+  if (
+    !result.row.every(r => r >= 0 && r < as.length) ||
+    new Set(result.row).size != as.length
+  ) {
+    const allScores = as.flatMap(a =>
+      bs.map(b => ({ a, b, score: scoreFun(a, b) }))
+    )
+    console.log("something's weird", {
+      allScores,
+      result
+    })
+  }
   // const assignments = result.col
 
   // return Array.from(assignments).map((p: number, i: number) => {

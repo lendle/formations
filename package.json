@@ -24,11 +24,13 @@
   "devDependencies": {
     "react-scripts": "2.1.8",
     "redux-devtools-extension": "^2.13.8",
+    "source-map-explorer": "^1.8.0",
     "tslint": "^5.16.0",
     "typescript": "^3.4.4",
     "typescript-tslint-plugin": "^0.3.1"
   },
   "scripts": {
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "predeploy": "npm run build",

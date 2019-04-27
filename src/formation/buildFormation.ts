@@ -4,6 +4,7 @@ import Base from "./components/Base"
 import Component from "./components/Component"
 import AbstractSlotCollection from "./AbstractSlotCollection"
 import { FormationSlot, Formation } from "./interfaces"
+import * as d3 from "d3"
 
 type Ring = Component[]
 type Dock = { c: Component; s: number }
@@ -62,12 +63,10 @@ const nextDockPositions = (
   if (rings.length === 1) {
     const base = rings[0][0]
 
-    return Array.from(new Array(baseSize / 2).keys())
-      .map(s => s * 2)
-      .map(slot => ({
-        left: { c: base, s: slot },
-        right: { c: base, s: (slot + baseSize - 1) % baseSize }
-      }))
+    return d3.range(0, baseSize, 2).map(slot => ({
+      left: { c: base, s: slot },
+      right: { c: base, s: (slot + baseSize - 1) % baseSize }
+    }))
   }
   if (
     !bridges ||
@@ -92,7 +91,7 @@ const nextDockPositions = (
     // ring 3 is bridges if there are bridges
     const firstPods = rings[1]
     const numBridges = firstPods.length
-    return Array.from(new Array(numBridges).keys()).map(bridgeNum => ({
+    return d3.range(numBridges).map(bridgeNum => ({
       left: { c: firstPods[(bridgeNum + 1) % numBridges], s: 0 },
       right: { c: firstPods[bridgeNum], s: 3 }
     }))
@@ -234,11 +233,11 @@ class FormationImpl extends AbstractSlotCollection<FormationSlot>
       }
       return componentToWaiting.get(component)!
     }
-    waiting(this.components[0])
+    // waiting(this.components[0])
     return this.components.flatMap(c => {
-      return Array.from(new Array(c.slots).keys()).map(
-        s => waiting(c) + c.maxBuildOrder() - c.buildOrder(s)
-      )
+      return d3
+        .range(c.slots)
+        .map(s => waiting(c) + c.maxBuildOrder() - c.buildOrder(s))
     })
   }
 }

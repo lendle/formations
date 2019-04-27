@@ -1,4 +1,4 @@
-import { PlaneAssignment, Formation, Plane, Slot } from "./interfaces"
+import { PlaneAssignment, Formation, Plane, SlotData } from "./interfaces"
 import lapwrapper from "./lapwrapper"
 import * as d3 from "d3"
 
@@ -25,14 +25,21 @@ export default function slotify(
   formation: Formation,
   planes: Plane[],
   planeAssignments: PlaneAssignment[]
-): Slot[] {
-  return planes.flatMap((plane, idx) => {
+): SlotData[] {
+  return planes.flatMap((plane, planeId) => {
     const formationSlotIds = planeAssignments
-      .filter(({ planeId }) => planeId === idx)
+      .filter(plane => plane.planeId === planeId)
       .map(({ formationSlotId }) => formationSlotId)
-    return slotPlane(plane, formation, formationSlotIds).map(p => ({
-      planeId: idx,
-      ...p
+
+    const planeSlotAssignments = slotPlane(plane, formation, formationSlotIds)
+
+    return planeSlotAssignments.map(({ formationSlotId, planeSlotId }) => ({
+      formationSlotId,
+      formationSlot: formation.slots[formationSlotId],
+      planeId,
+      plane,
+      planeSlotId,
+      planeSlot: plane.slots[planeSlotId]
     }))
   })
 }

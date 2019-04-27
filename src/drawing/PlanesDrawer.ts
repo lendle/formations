@@ -1,29 +1,30 @@
-import {
-  Plane,
-  Slot,
-  PlaneSlot,
-  Formation,
-  FormationSlot
-} from "../formation/interfaces"
+import { Plane, SlotData, Formation } from "../formation/interfaces"
 import AbstractDrawer from "./AbstractDrawer"
 import * as d3 from "d3"
 import PlanePosition from "../formation/PlanePosition"
 import { ViewConfigState, ShowOption } from "../store/types"
 import Polar from "../geometry/Polar"
 import { PI, SCALE_FACTOR, TAU } from "../constants"
+import {
+  planeX,
+  planeY,
+  FORMATION_SCALE_FACTOR,
+  addSlot,
+  updateSlot,
+  transitionOut,
+  SlotDataFun
+} from "./slotdatafuns"
+import { BaseType } from "d3"
 
 type XY = {
   x: number;
   y: number;
 }
 
-interface SlottedPlane {
-  plane: Plane
-  slots: Slot[]
+type SlottedPlane = {
+  plane: Plane;
+  slotData: SlotData[];
 }
-
-const x = (d: XY) => d.x * 40
-const y = (d: XY) => d.y * 40
 
 const w = 1.5
 const l = 6
@@ -39,104 +40,17 @@ const doorPoints = [{ x: -w, y: l - 6 }, { x: -w, y: l - 2 }]
 
 const line = d3
   .line<XY>()
-  .x(x)
-  .y(y)
+  .x(d => d.x * FORMATION_SCALE_FACTOR)
+  .y(d => d.y * FORMATION_SCALE_FACTOR)
 
-/**
- *
- * @param g a selection (of g)
- * @param fill function mapping slotData to a fill color
- * @param label function mapping slotData to a label
- */
-const addPlane = (
-  g: d3.Transition<SVGGElement, SlottedPlane, SVGGElement, {}>,
-  positionToCoordinate: Map<PlanePosition, Polar>
-) => {
-  g.call(gg =>
-    gg.attr(
-      "transform",
-      ({ plane: { position } }) =>
-        `translate(${positionToCoordinate.get(position)!.x}, ${
-          positionToCoordinate.get(position)!.y
-        }) scale(1)`
-    )
-  )
-    .selection()
-    .call(gg => gg.append("path").attr("d", line(otterPoints)!))
-    .call(gg =>
-      gg
-        .append("path")
-        .attr("stroke-width", 3)
-        .attr("d", line(doorPoints)!)
-    )
-    .call(gg =>
-      gg
-        .append("text")
-        .attr("text-anchor", "middle")
-        .attr("dominant-baseline", "central")
-        .attr("x", 0)
-        .attr("y", -260)
-        .text(({ plane: { position } }) => position)
-    )
-    .selectAll<SVGGElement, PlaneSlot & Slot>("g")
-    .data<PlaneSlot & Slot>(
-      ({ plane, slots }) =>
-        slots.map(s => ({
-          ...s,
-          ...plane.slots[s.planeSlotId]
-        })),
-      d => d.formationSlotId.toString()
-    )
-    .join(
-      enter =>
-        enter
-          .append("g")
-          .call(slotG =>
-            slotG
-              .append("circle")
-              .attr("cx", x)
-              .attr("cy", y)
-              .attr("r", 16)
-          )
-          .call(slotG =>
-            slotG
-              .append("text")
-              .attr("text-anchor", "middle")
-              .attr("dominant-baseline", "central")
-              .attr("x", x)
-              .attr("y", y)
-              // .text(d => d.jr)
-              .text(d => d.formationSlotId + 1)
-          ),
-      update =>
-        update
-          .call(update =>
-            update
-              .select("circle")
-              .attr("cx", x)
-              .attr("cy", y)
-          )
-          .call(update =>
-            update
-              .select("text")
-              .attr("x", x)
-              .attr("y", y)
-          ),
-      exit => exit.remove()
-    )
-}
-type PlanesAndCoordinates = {
-  planes: Plane[];
-  positionToCoordinate: Map<PlanePosition, Polar>;
-}
-const planesAndCoordinates = ({
+const planeCoordinates = ({
   planes,
   viewConfig: { show },
   formation: { radius }
-}: PlanesArgs): PlanesAndCoordinates => {
+}: PlanesArgs) => {
   switch (show) {
     case ShowOption.FORMATION:
-      return { planes: [], positionToCoordinate: new Map() }
+      return new Map()
     case ShowOption.PLANES: {
       const positions = planes.map(p => p.position)
       const positionToCoordinate = new Map(
@@ -147,7 +61,7 @@ const planesAndCoordinates = ({
             return [p, new Polar(Math.abs(offset), offset >= 0 ? 0 : PI)]
           })
       )
-      return { planes, positionToCoordinate }
+      return positionToCoordinate
     }
     case ShowOption.BOTH: {
       const positionToCoordinate = new Map(
@@ -155,59 +69,84 @@ const planesAndCoordinates = ({
           return [
             position,
             new Polar(
-              (radius + 3) * SCALE_FACTOR,
+              Math.max(7, radius + 3) * SCALE_FACTOR,
               position === PlanePosition.LEAD ? TAU / 12 : theta
             )
           ]
         })
       )
-      return { planes, positionToCoordinate }
+      return positionToCoordinate
     }
   }
 }
 
 interface PlanesArgs {
-  slots: Slot[]
+  slots: SlotData[]
   planes: Plane[]
   formation: Formation
   viewConfig: ViewConfigState
+  fill: SlotDataFun
+  label: SlotDataFun
 }
 export default class PlanesDrawer extends AbstractDrawer<PlanesArgs, void> {
   draw(args: PlanesArgs) {
-    const { planes, positionToCoordinate } = planesAndCoordinates(args)
+    const p2c = planeCoordinates(args)
 
-    const slottedPlanes: SlottedPlane[] = planes.map((plane, id) => ({
-      plane,
-      slots: args.slots.filter(({ planeId }) => id === planeId)
-    }))
+    const { fill, label } = args
 
-    const planeGrps = this.group
+    const slotsByPlane = Array.from(
+      args.slots.reduce((map, slotData) => {
+        const array = map.get(slotData.plane) || []
+        array.push(slotData)
+        return map.set(slotData.plane, array)
+      }, new Map<Plane, SlotData[]>())
+    ).map(([plane, slotData]) => ({ plane, slotData }))
+
+    const t = d3.transition().duration(1000) as d3.Transition<
+      BaseType,
+      any,
+      any,
+      any
+    >
+
+    this.group
       .selectAll<SVGGElement, SlottedPlane>("g.plane")
-      .data(slottedPlanes, sp => sp.plane.position)
-
-    planeGrps
-      .transition()
-      .duration(1000)
-      .call(addPlane, positionToCoordinate)
-
-    planeGrps
-      .enter()
-      .append("g")
-      .attr("class", "plane")
-      .attr("transform", "translate(0,0) scale(0)")
-      .transition()
-      .duration(1000)
-      .call(addPlane, positionToCoordinate)
-
-    planeGrps
-      .exit()
-      .transition()
-      .duration(1000)
-      .attr("transform", "translate(0,0) scale(0)")
-      .remove()
+      .data<SlottedPlane>(slotsByPlane, d => d.plane.position)
+      .join(
+        enter =>
+          enter
+            .append("g")
+            .classed("plane", true)
+            .call(gg => {
+              gg.append("path").attr("d", line(otterPoints)!)
+              gg.append("path")
+                .attr("stroke-width", 3)
+                .attr("d", line(doorPoints)!)
+              gg.append("text")
+                .attr("text-anchor", "middle")
+                .attr("dominant-baseline", "central")
+                .attr("x", 0)
+                .attr("y", -260)
+                .text(d => d.plane.position)
+            })
+            .attr("transform", "translate(0,0) scale(0)"),
+        undefined,
+        exit => transitionOut(exit, t)
+      )
+      .transition(t)
+      .attr(
+        "transform",
+        ({ plane: { position } }) =>
+          `translate(${p2c.get(position)!.x},${p2c.get(position)!.y}) scale(1)`
+      )
+      .selection()
+      .selectAll<SVGGElement, SlotData>("g.slot")
+      .data<SlotData>(d => d.slotData, d => `${d.formationSlotId}.${d.planeId}`)
+      .join(enter => addSlot(enter), undefined, exit => transitionOut(exit, t))
+      .transition(t)
+      .attr("transform", "scale(1)")
+      .call(slotG => {
+        updateSlot(slotG, planeX, planeY, fill, label)
+      })
   }
 }
-
-//     protected computeSlots(): PlaneSlot[] {
-
-//     }
