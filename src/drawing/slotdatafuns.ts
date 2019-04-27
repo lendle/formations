@@ -1,7 +1,7 @@
 import { SlotData } from "../formation/interfaces"
 import * as d3 from "d3"
 import PlanePosition from "../formation/PlanePosition"
-import { SCALE_FACTOR } from "../constants"
+import { SCALE_FACTOR, TAU } from "../constants"
 import { BaseType } from "d3"
 
 export type SlotDataFun = (d: SlotData) => any
@@ -32,10 +32,16 @@ const planeFill = (d: SlotData) =>
     d.plane.position
   )
 
+const radialFill = ({ formationSlot }: SlotData) => {
+  const theta = formationSlot.offset.plus(formationSlot.position).theta / TAU
+  return d3.interpolateRainbow(theta)
+}
+
 export const FILL_FUNCTIONS: StringDict<SlotDataFun> = {
   DEFAULT: () => null,
   BUILD_ORDER: buildOrderFill,
-  PLANE: planeFill
+  PLANE: planeFill,
+  RADIAL: radialFill
 }
 
 export const LABEL_FUNCTIONS: StringDict<SlotDataFun> = {

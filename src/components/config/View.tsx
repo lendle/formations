@@ -29,7 +29,8 @@ const View = (props: Props) => {
   const colorBys = [
     { opt: ColorOption.DEFAULT, desc: "Default" },
     { opt: ColorOption.PLANE, desc: "Plane" },
-    { opt: ColorOption.BUILD_ORDER, desc: "Build Order" }
+    { opt: ColorOption.BUILD_ORDER, desc: "Build Order" },
+    { opt: ColorOption.RADIAL, desc: "Radial" }
   ].map(({ opt, desc }) => (
     <Dropdown.Item
       key={opt}

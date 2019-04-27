@@ -14,7 +14,8 @@ export enum PlaneType {
 export enum ColorOption {
   DEFAULT = "DEFAULT",
   PLANE = "PLANE",
-  BUILD_ORDER = "BUILD_ORDER"
+  BUILD_ORDER = "BUILD_ORDER",
+  RADIAL = "RADIAL"
 }
 
 export enum NumberOption {
