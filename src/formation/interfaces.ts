@@ -1,5 +1,6 @@
 import Polar from "../geometry/Polar"
 import PlanePosition from "./PlanePosition"
+import { PlaneType } from "../store/types"
 
 export type NumDict<V> = { [index: number]: V }
 
@@ -31,8 +32,8 @@ export interface FormationSlot extends ComponentSlot {
 }
 
 export interface PlaneSlot extends BaseSlot {
-  x: number //for plotting
-  y: number //for plotting
+  // x: number //for plotting
+  // y: number //for plotting
   jr: number // jump run score. 0 for ~ base, positive for before base (floaters), negative for after base (divers)
 }
 
@@ -49,4 +50,5 @@ export interface Plane extends SlotCollection<PlaneSlot> {
   position: PlanePosition
   theta: number
   filledSlots: number
+  type: PlaneType
 }

@@ -32,7 +32,7 @@ export enum ShowOption {
 export enum FormationType {
   HD,
   HD_ABOVE,
-  SD
+  HU
 }
 
 export interface PlaneState {

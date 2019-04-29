@@ -4,6 +4,7 @@ import PlanePosition from "../formation/PlanePosition"
 import { SCALE_FACTOR, TAU } from "../constants"
 import { BaseType } from "d3"
 import { ColorOption, NumberOption } from "../store/types"
+import { planeDrawers } from "./planedrawers"
 
 export type SlotDataFun = (d: SlotData) => any
 
@@ -68,8 +69,8 @@ export const y = ({ formationSlot: { position } }: SlotData) =>
 export const translate = ({ formationSlot: { offset } }: SlotData) =>
   `translate(${offset.scale(SCALE_FACTOR).x},${offset.scale(SCALE_FACTOR).y})`
 
-export const planeX = (d: SlotData) => d.planeSlot.x * FORMATION_SCALE_FACTOR
-export const planeY = (d: SlotData) => d.planeSlot.y * FORMATION_SCALE_FACTOR
+export const planeX = (d: SlotData) => planeDrawers[d.plane.type].x(d)
+export const planeY = (d: SlotData) => planeDrawers[d.plane.type].y(d)
 
 export const FORMATION_SCALE_FACTOR = 40
 

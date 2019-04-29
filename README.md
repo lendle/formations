@@ -1,12 +1,10 @@
 #### TODO
 
-- [ ] skyvan
 - [ ] base slotting
 - [ ] super float
 - [ ] video
 - [ ] number by plane
-- [ ] refactor slot data
-- [ ] view options consistant
+- [ ] flip by formation type
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

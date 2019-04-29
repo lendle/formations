@@ -8,40 +8,14 @@ import { PI, SCALE_FACTOR, TAU } from "../constants"
 import {
   planeX,
   planeY,
-  FORMATION_SCALE_FACTOR,
   addSlot,
   updateSlot,
   transitionOut,
   SlotDataFun
 } from "./slotdatafuns"
 import { BaseType } from "d3"
-
-type XY = {
-  x: number;
-  y: number;
-}
-
-type SlottedPlane = {
-  plane: Plane;
-  slotData: SlotData[];
-}
-
-const w = 1.5
-const l = 6
-const otterPoints = [
-  { x: -w, y: -l - 1 },
-  { x: w, y: -l - 1 },
-  { x: w, y: l },
-  { x: -w, y: l },
-  { x: -w, y: -l - 1 }
-]
-
-const doorPoints = [{ x: -w, y: l - 6 }, { x: -w, y: l - 2 }]
-
-const line = d3
-  .line<XY>()
-  .x(d => d.x * FORMATION_SCALE_FACTOR)
-  .y(d => d.y * FORMATION_SCALE_FACTOR)
+import { OtterDrawer, planeDrawers } from "./planedrawers"
+import { SlottedPlane } from "./interfaces"
 
 const planeCoordinates = ({
   planes,
@@ -94,6 +68,8 @@ export default class PlanesDrawer extends AbstractDrawer<PlanesArgs, void> {
 
     const { fill, label } = args
 
+    // const label = (d: SlotData) => d.plane.slots[d.planeSlotId].jr.toString()
+
     const slotsByPlane = Array.from(
       args.slots.reduce((map, slotData) => {
         const array = map.get(slotData.plane) || []
@@ -111,23 +87,17 @@ export default class PlanesDrawer extends AbstractDrawer<PlanesArgs, void> {
 
     this.group
       .selectAll<SVGGElement, SlottedPlane>("g.plane")
-      .data<SlottedPlane>(slotsByPlane, d => d.plane.position)
+      .data<SlottedPlane>(
+        slotsByPlane,
+        d => `${d.plane.position}.${d.plane.type}`
+      )
       .join(
         enter =>
           enter
             .append("g")
             .classed("plane", true)
-            .call(gg => {
-              gg.append("path").attr("d", line(otterPoints)!)
-              gg.append("path")
-                .attr("stroke-width", 3)
-                .attr("d", line(doorPoints)!)
-              gg.append("text")
-                .attr("text-anchor", "middle")
-                .attr("dominant-baseline", "central")
-                .attr("x", 0)
-                .attr("y", -260)
-                .text(d => d.plane.position)
+            .each(({ plane }, i, nodes) => {
+              planeDrawers[plane.type].draw(d3.select(nodes[i]))
             })
             .attr("transform", "translate(0,0) scale(0)"),
         undefined,
@@ -141,7 +111,7 @@ export default class PlanesDrawer extends AbstractDrawer<PlanesArgs, void> {
       )
       .selection()
       .selectAll<SVGGElement, SlotData>("g.slot")
-      .data<SlotData>(d => d.slotData, d => `${d.formationSlotId}.${d.planeId}`)
+      .data(d => d.slotData, d => `${d.formationSlotId}.${d.planeId}`)
       .join(enter => addSlot(enter), undefined, exit => transitionOut(exit, t))
       .transition(t)
       .attr("transform", "scale(1)")

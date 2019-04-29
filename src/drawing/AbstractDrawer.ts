@@ -1,4 +1,4 @@
-import Drawer from "./interfaces"
+import { Drawer } from "./interfaces"
 
 export default abstract class AbstractDrawer<Args, ReturnArgs>
   implements Drawer<Args, ReturnArgs> {
