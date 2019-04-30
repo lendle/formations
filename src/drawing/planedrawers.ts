@@ -91,13 +91,13 @@ export class SkyvanDrawer implements PlaneDrawer {
   private redLine = [{ x: -w, y: l - 4 }, { x: w, y: l - 4 }]
 
   /**
-   *       x
-   *     x  22
-   *     x  20
-   *     x  18
-   *     x  16
-   *     x  14
-   *     x  12
+   *      23
+   *    21  22
+   *    19  20
+   *    17  18
+   *    15  16
+   *    13  14
+   *    11  12
    *     9  10
    *   ---------
    *     7   8

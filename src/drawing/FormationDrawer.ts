@@ -42,20 +42,21 @@ export default class FormationDrawer extends AbstractDrawer<
         enter =>
           enter
             .append("g")
-            .attr("class", "slotgroup")
-            .attr("transform", "translate(0,0) scale(0)")
+            .attr("class", "slotgroup") // slot plus grips
+            .attr("transform", "translate(0,0) scale(0)") //start scaled down
             .call(g => {
-              g.append("path")
+              g.append("path") //add the grips path
                 .attr("class", "grips")
                 .attr("d", arc)
-              addSlot(g, x, y, fill, label)
+              addSlot(g, x, y, fill, label) //add the slot circle with fill
             }),
-        undefined,
+        undefined, //pass through, since we want to transition both new and old points
         exit => transitionOut(exit, t)
       )
       .transition(t)
-      .attr("transform", d => translate(d) + " scale(1)")
+      .attr("transform", d => translate(d) + " scale(1)") //scale up translate
       .call(g => {
+        //basically a no op for data that just entered
         g.select("path").attr("d", arc)
         updateSlot(g, x, y, fill, label)
       })
