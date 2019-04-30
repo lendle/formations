@@ -3,7 +3,9 @@ import PlanePosition from "./PlanePosition"
 import Polar from "../geometry/Polar"
 import { PI } from "../constants"
 import approxeq from "../util/approxeq"
-import lapwrapper from "./lapwrapper"
+import lapwrapper, { combineScoreFuns } from "./lapwrapper"
+import { range } from "d3"
+import { FormationType } from "../store/types"
 
 /**
  * Puts people in planes
@@ -17,6 +19,7 @@ export default function planeify(
   if (planes[0].position !== PlanePosition.LEAD) {
     throw new Error("lead plane should be first")
   }
+  const LEAD_ID = 0
 
   //slotted[planeId] = array of slot indexes for plane planeId
   const slotted = planes.map(() => [] as number[])
@@ -24,8 +27,11 @@ export default function planeify(
   // ### rule based slotting ###
   // base in lead f
 
-  slotted[0].push(...formation.baseIds)
-
+  const baseScores = (slotId: number, planeId: number) => {
+    if (formation.baseIds.includes(slotId)) {
+      return planeId === LEAD_ID ? 0 : 1000
+    }
+  }
   //todo add superfloat
 
   // ### end rule based slotting ###
@@ -65,39 +71,16 @@ export default function planeify(
   //     return Math.abs(slot.position.plus(slot.offset).distanceFrom(new Polar(100, plane.theta)))
   //   }
 
-  //get an array of formationSlotId that are not already in slotted
-  const unslotted = Array.from(formation.slots.keys()).filter(
-    formationSlotId => !slotted.flat().includes(formationSlotId)
+  const unslotted = range(formation.slots.length)
+  const planeArray = planes.flatMap((plane, planeId) =>
+    (Array(plane.filledSlots) as number[]).fill(planeId)
   )
 
-  // planeArray is an array of planeIds, repeated for the number of slots to fill in that plane
-  const planeArray = planes.flatMap((plane, planeId) => {
-    const remainigToFill = plane.filledSlots - slotted[planeId].length
-    return (Array(remainigToFill) as number[]).fill(planeId)
-  })
-
-  //takes a scoreFun that takes a slotId and planeId,
-  //and converts it to a function that takes i, j for i, j in [0, number of unslotted people)
-  //for use with lap()
-  const cost = (scoreFun: (slotId: number, planeId: number) => number) => {
-    if (planeArray.length !== unslotted.length) {
-      throw new Error("planeArray and unslotted have diff lenghts")
-    }
-
-    //memoize scoreFun
-    const memo = new Map<string, number>()
-    return (i: number, j: number): number => {
-      const key = `${i}.${j}`
-      if (!memo.has(key)) {
-        const slotId = unslotted[i]
-        const planeId = planeArray[j]
-        memo.set(key, scoreFun(slotId, planeId))
-      }
-      return memo.get(key)!
-    }
-  }
-
-  const assignments = lapwrapper(unslotted, planeArray, angleScore)
+  const assignments = lapwrapper(
+    unslotted,
+    planeArray,
+    combineScoreFuns(baseScores)(angleScore)
+  )
 
   assignments.forEach(([slotId, planeId]) => slotted[planeId].push(slotId))
 

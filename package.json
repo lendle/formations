@@ -11,6 +11,7 @@
     "@types/react-dom": "^16.8.4",
     "@types/react-redux": "^7.0.7",
     "d3": "^5.9.2",
+    "d3-array": "^2.0.3",
     "gh-pages": "^2.0.1",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",

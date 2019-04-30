@@ -1,24 +1,13 @@
 import { SlotData } from "../formation/interfaces"
 import * as d3 from "d3"
 import PlanePosition from "../formation/PlanePosition"
-import { SCALE_FACTOR, TAU } from "../constants"
+import { SCALE_FACTOR, TAU, PI } from "../constants"
 import { BaseType } from "d3"
-import { ColorOption, NumberOption } from "../store/types"
+import { ColorOption, NumberOption, FormationType } from "../store/types"
 import { planeDrawers } from "./planedrawers"
+import Polar from "../geometry/Polar"
 
 export type SlotDataFun = (d: SlotData) => any
-
-type StringDict<V> = { [index: string]: V }
-
-export const arc = ({ formationSlot: { position, dockAngle } }: SlotData) => {
-  const scaledPos = position.scale(SCALE_FACTOR)
-  return d3.arc()({
-    outerRadius: scaledPos.radius,
-    innerRadius: scaledPos.radius,
-    startAngle: scaledPos.d3theta - dockAngle,
-    endAngle: scaledPos.d3theta + dockAngle
-  })
-}
 
 const stringRange = (stop: number): string[] =>
   d3.range(stop).map(x => x.toString())
@@ -61,13 +50,34 @@ export const labelFunction = (numberBy: NumberOption) => {
   }
 }
 
-// const arc = (d: SlotData) => arcFun(d)()
-export const x = ({ formationSlot: { position } }: SlotData) =>
-  position.scale(SCALE_FACTOR).x
-export const y = ({ formationSlot: { position } }: SlotData) =>
-  position.scale(SCALE_FACTOR).y
-export const translate = ({ formationSlot: { offset } }: SlotData) =>
-  `translate(${offset.scale(SCALE_FACTOR).x},${offset.scale(SCALE_FACTOR).y})`
+const scaledCoord = (point: Polar, type: FormationType) =>
+  (type === FormationType.HD ? point.flip(PI / 2) : point).scale(SCALE_FACTOR)
+
+const scaledPosition = ({
+  formationSlot: { position },
+  formation: { type }
+}: SlotData) => scaledCoord(position, type)
+
+const scaledOffset = ({
+  formationSlot: { offset },
+  formation: { type }
+}: SlotData) => scaledCoord(offset, type)
+
+export const arc = (d: SlotData) => {
+  const scaledPos = scaledPosition(d)
+  const dockAngle = d.formationSlot.dockAngle
+  return d3.arc()({
+    outerRadius: scaledPos.radius,
+    innerRadius: scaledPos.radius,
+    startAngle: scaledPos.d3theta - dockAngle,
+    endAngle: scaledPos.d3theta + dockAngle
+  })
+}
+
+export const x = (d: SlotData) => scaledPosition(d).x
+export const y = (d: SlotData) => scaledPosition(d).y
+export const translate = (d: SlotData) =>
+  `translate(${scaledOffset(d).x},${scaledOffset(d).y})`
 
 export const planeX = (d: SlotData) => planeDrawers[d.plane.type].x(d)
 export const planeY = (d: SlotData) => planeDrawers[d.plane.type].y(d)

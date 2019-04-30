@@ -5,6 +5,8 @@ import Component from "./components/Component"
 import AbstractSlotCollection from "./AbstractSlotCollection"
 import { FormationSlot, Formation } from "./interfaces"
 import * as d3 from "d3"
+import { FormationType } from "../store/types"
+import { PI } from "../constants"
 
 type Ring = Component[]
 type Dock = { c: Component; s: number }
@@ -182,16 +184,28 @@ const addRings = (slots: number, baseSize: number, rings: Ring[]): Ring[] => {
 class FormationImpl extends AbstractSlotCollection<FormationSlot>
   implements Formation {
   components: Component[]
-  constructor(components: Component[]) {
+  type: FormationType
+  constructor(components: Component[], type: FormationType) {
     super()
     this.components = components
+    this.type = type
   }
 
   protected computeSlots(): FormationSlot[] {
     const reverseBuildOrder = this.reverseBuildOrder()
     return this.components
       .flatMap(c => c.allSlots())
-      .map((s, idx) => ({ ...s, reverseBuildOrder: reverseBuildOrder[idx] }))
+      .map((s, idx) => {
+        const adjustedSlot =
+          this.type === FormationType.HU
+            ? s
+            : {
+                ...s,
+                position: s.position.flip(PI / 2),
+                offset: s.offset.flip(PI / 2)
+              }
+        return { ...adjustedSlot, reverseBuildOrder: reverseBuildOrder[idx] }
+      })
   }
 
   get baseIds(): number[] {
@@ -259,9 +273,11 @@ class FormationImpl extends AbstractSlotCollection<FormationSlot>
  */
 export default function buildFormation(
   slots: number,
-  baseSize: number
+  baseSize: number,
+  type: FormationType
 ): Formation {
   return new FormationImpl(
-    addRings(slots, baseSize, [[new Base(baseSize)]]).flat()
+    addRings(slots, baseSize, [[new Base(baseSize)]]).flat(),
+    type
   )
 }

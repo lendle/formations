@@ -24,16 +24,12 @@ export default class FormationDrawer extends AbstractDrawer<
   FormationArgs,
   void
 > {
-  draw({ slots, viewConfig, fill, label }: FormationArgs) {
+  draw(
+    { slots, viewConfig, fill, label }: FormationArgs,
+    t: Transition<BaseType, any, any, any>
+  ) {
     const slotData: SlotData[] =
       viewConfig.show === ShowOption.PLANES ? [] : slots
-
-    const t = d3.transition().duration(1000) as Transition<
-      BaseType,
-      any,
-      any,
-      any
-    >
 
     this.group
       .selectAll<SVGGElement, SlotData>("g.slotgroup")

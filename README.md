@@ -4,7 +4,6 @@
 - [ ] super float
 - [ ] video
 - [ ] number by plane
-- [ ] flip by formation type
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

@@ -7,6 +7,7 @@ import PlanesDrawer from "../drawing/PlanesDrawer"
 import { ViewConfigState } from "../store/types"
 import FormationDrawer from "../drawing/FormationDrawer"
 import { SlotDataFun } from "../drawing/slotdatafuns"
+import { Transition, BaseType } from "d3"
 
 interface FormationProps {
   formation: Formation
@@ -49,18 +50,32 @@ export default class FormationComponent extends React.Component<
     //bounding box
     // https://bl.ocks.org/iamkevinv/0a24e9126cd2fa6b283c6f2d774b69a2
 
+    const t = d3.transition().duration(1000) as Transition<
+      BaseType,
+      any,
+      any,
+      any
+    >
+
     this.formationDrawer = new FormationDrawer().withGroup(
       this.allGrp.append("g")
     )
-    this.formationDrawer.draw(this.props)
+
+    this.formationDrawer.draw(this.props, t)
 
     this.planesDrawer = new PlanesDrawer().withGroup(this.allGrp.append("g"))
-    this.planesDrawer.draw(this.props)
+    this.planesDrawer.draw(this.props, t)
   }
 
   componentDidUpdate() {
-    this.formationDrawer.draw(this.props)
-    this.planesDrawer.draw(this.props)
+    const t = d3.transition().duration(1000) as Transition<
+      BaseType,
+      any,
+      any,
+      any
+    >
+    this.formationDrawer.draw(this.props, t)
+    this.planesDrawer.draw(this.props, t)
   }
 
   render() {

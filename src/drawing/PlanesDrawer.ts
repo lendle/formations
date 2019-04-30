@@ -1,8 +1,9 @@
 import { Plane, SlotData, Formation } from "../formation/interfaces"
 import AbstractDrawer from "./AbstractDrawer"
 import * as d3 from "d3"
+import { group as d3Group } from "d3-array"
 import PlanePosition from "../formation/PlanePosition"
-import { ViewConfigState, ShowOption } from "../store/types"
+import { ViewConfigState, ShowOption, FormationType } from "../store/types"
 import Polar from "../geometry/Polar"
 import { PI, SCALE_FACTOR, TAU } from "../constants"
 import {
@@ -14,18 +15,18 @@ import {
   SlotDataFun
 } from "./slotdatafuns"
 import { BaseType } from "d3"
-import { OtterDrawer, planeDrawers } from "./planedrawers"
+import { planeDrawers } from "./planedrawers"
 import { SlottedPlane } from "./interfaces"
 
 const planeCoordinates = ({
   planes,
   viewConfig: { show },
-  formation: { radius }
+  formation: { radius, type }
 }: PlanesArgs) => {
   switch (show) {
     case ShowOption.FORMATION:
-      return new Map()
     case ShowOption.PLANES: {
+      //if we're only showing planes, then draw them in a line
       const positions = planes.map(p => p.position)
       const positionToCoordinate = new Map(
         [PlanePosition.LT, PlanePosition.LEAD, PlanePosition.RT]
@@ -38,14 +39,16 @@ const planeCoordinates = ({
       return positionToCoordinate
     }
     case ShowOption.BOTH: {
+      //if we're showing planes and formation, draw outside of formation radius
       const positionToCoordinate = new Map(
         planes.map(({ position, theta }) => {
+          const coord = new Polar(
+            Math.max(7, radius + 3) * SCALE_FACTOR,
+            position === PlanePosition.LEAD ? TAU / 12 : theta
+          )
           return [
             position,
-            new Polar(
-              Math.max(7, radius + 3) * SCALE_FACTOR,
-              position === PlanePosition.LEAD ? TAU / 12 : theta
-            )
+            type === FormationType.HD ? coord.flip(PI / 2) : coord
           ]
         })
       )
@@ -63,27 +66,19 @@ interface PlanesArgs {
   label: SlotDataFun
 }
 export default class PlanesDrawer extends AbstractDrawer<PlanesArgs, void> {
-  draw(args: PlanesArgs) {
+  draw(args: PlanesArgs, t: d3.Transition<BaseType, any, any, any>) {
     const p2c = planeCoordinates(args)
 
     const { fill, label } = args
 
     // const label = (d: SlotData) => d.plane.slots[d.planeSlotId].jr.toString()
 
-    const slotsByPlane = Array.from(
-      args.slots.reduce((map, slotData) => {
-        const array = map.get(slotData.plane) || []
-        array.push(slotData)
-        return map.set(slotData.plane, array)
-      }, new Map<Plane, SlotData[]>())
-    ).map(([plane, slotData]) => ({ plane, slotData }))
-
-    const t = d3.transition().duration(1000) as d3.Transition<
-      BaseType,
-      any,
-      any,
-      any
-    >
+    const slotsByPlane =
+      args.viewConfig.show === ShowOption.FORMATION
+        ? []
+        : Array.from(d3Group(args.slots, d => d.plane)).map(
+            ([plane, slotData]) => ({ plane, slotData })
+          )
 
     this.group
       .selectAll<SVGGElement, SlottedPlane>("g.plane")
@@ -97,7 +92,8 @@ export default class PlanesDrawer extends AbstractDrawer<PlanesArgs, void> {
             .append("g")
             .classed("plane", true)
             .each(({ plane }, i, nodes) => {
-              planeDrawers[plane.type].draw(d3.select(nodes[i]))
+              //draw each plane frame
+              planeDrawers[plane.type].draw(d3.select(nodes[i]), t)
             })
             .attr("transform", "translate(0,0) scale(0)"),
         undefined,
@@ -107,12 +103,16 @@ export default class PlanesDrawer extends AbstractDrawer<PlanesArgs, void> {
       .attr(
         "transform",
         ({ plane: { position } }) =>
-          `translate(${p2c.get(position)!.x},${p2c.get(position)!.y}) scale(1)`
+          `translate(${p2c.get(position)!.x},${p2c.get(position)!.y}) scale(1)` //transition planes from center
       )
       .selection()
       .selectAll<SVGGElement, SlotData>("g.slot")
       .data(d => d.slotData, d => `${d.formationSlotId}.${d.planeId}`)
-      .join(enter => addSlot(enter), undefined, exit => transitionOut(exit, t))
+      .join(
+        addSlot, //add slots on enter without initial coordinates or label
+        undefined,
+        exit => transitionOut(exit, t)
+      )
       .transition(t)
       .attr("transform", "scale(1)")
       .call(slotG => {

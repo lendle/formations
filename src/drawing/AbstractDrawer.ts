@@ -9,5 +9,5 @@ export default abstract class AbstractDrawer<Args, ReturnArgs>
     return this
   }
 
-  abstract draw(args: Args): ReturnArgs
+  abstract draw(args: Args, transition: any): ReturnArgs
 }

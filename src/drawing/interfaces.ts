@@ -15,7 +15,10 @@ export interface Drawer<Args, ReturnArgs> {
 // }
 
 export interface PlaneDrawer {
-  draw(g: d3.Selection<SVGGElement, SlottedPlane, BaseType, any>): void
+  draw(
+    g: d3.Selection<SVGGElement, SlottedPlane, BaseType, any>,
+    t: d3.Transition<BaseType, any, any, any>
+  ): void
 
   x(d: SlotData): number
   y(d: SlotData): number

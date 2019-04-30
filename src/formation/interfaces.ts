@@ -1,6 +1,6 @@
 import Polar from "../geometry/Polar"
 import PlanePosition from "./PlanePosition"
-import { PlaneType } from "../store/types"
+import { PlaneType, FormationType } from "../store/types"
 
 export type NumDict<V> = { [index: number]: V }
 
@@ -14,6 +14,7 @@ export interface PlaneAssignment {
 export interface SlotData {
   formationSlotId: number
   formationSlot: FormationSlot
+  formation: Formation
   planeId: number
   plane: Plane
   planeSlotId: number
@@ -44,6 +45,7 @@ export interface SlotCollection<S extends BaseSlot> {
 export interface Formation extends SlotCollection<FormationSlot> {
   baseIds: number[]
   radius: number
+  type: FormationType
 }
 
 export interface Plane extends SlotCollection<PlaneSlot> {

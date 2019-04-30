@@ -14,8 +14,9 @@ const slotPlane = (
 
     const slotJr = slot.offset.plus(slot.position).y
 
-    return Math.abs(jr) * reverseBuildOrder * 100 - slotJr * jr
+    return Math.abs(jr) * reverseBuildOrder * 100 - slotJr * jr + 1000
   }
+
   return lapwrapper(formationSlotIds, d3.range(plane.filledSlots), score).map(
     ([formationSlotId, planeSlotId]) => ({ formationSlotId, planeSlotId })
   )
@@ -36,6 +37,7 @@ export default function slotify(
     return planeSlotAssignments.map(({ formationSlotId, planeSlotId }) => ({
       formationSlotId,
       formationSlot: formation.slots[formationSlotId],
+      formation,
       planeId,
       plane,
       planeSlotId,
