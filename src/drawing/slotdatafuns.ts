@@ -45,10 +45,19 @@ export const labelFunction = (numberBy: NumberOption) => {
   switch (numberBy) {
     case NumberOption.BUILD_ORDER:
       return (d: SlotData) => d.formationSlot.buildOrder
+    case NumberOption.SLOT_NUM_BY_PLANE:
+      return (d: SlotData) => d.byPlaneSlotId + 1
     default:
       return (d: SlotData) => d.formationSlotId + 1
   }
 }
+
+/**
+ * wraps label, replacing label with "B" for base slots
+ * @param label label function
+ */
+export const baseLabel = (label: SlotDataFun) => (d: SlotData) =>
+  d.formation.baseIds.includes(d.formationSlotId) ? "B" : label(d)
 
 const scaledCoord = (point: Polar, type: FormationType) =>
   (type === FormationType.HD ? point.flip(PI / 2) : point).scale(SCALE_FACTOR)

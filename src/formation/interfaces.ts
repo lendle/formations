@@ -11,14 +11,18 @@ export interface PlaneAssignment {
   planeId: number
 }
 
+export interface PlaenSlotAssignment extends PlaneAssignment {
+  planeSlotId: number
+}
+
 export interface SlotData {
   formationSlotId: number
-  formationSlot: FormationSlot
   formation: Formation
+  formationSlot: FormationSlot
   planeId: number
   plane: Plane
   planeSlotId: number
-  planeSlot: PlaneSlot
+  byPlaneSlotId: number
 }
 
 export interface ComponentSlot extends BaseSlot {
@@ -53,4 +57,7 @@ export interface Plane extends SlotCollection<PlaneSlot> {
   theta: number
   filledSlots: number
   type: PlaneType
+  baseIds: number[]
+  videoId: number
+  superFloatId: number
 }

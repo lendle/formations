@@ -212,7 +212,7 @@ class FormationImpl extends AbstractSlotCollection<FormationSlot>
     return this.components
       .find(c => c instanceof Base)!
       .allSlots()
-      .map((s, idx) => idx)
+      .map((_, idx) => idx)
   }
 
   get radius(): number {

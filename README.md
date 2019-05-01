@@ -1,9 +1,8 @@
 #### TODO
 
-- [ ] base slotting
-- [ ] super float
-- [ ] video
-- [ ] number by plane
+- [1/2] super float
+- [1/2] video
+- [ ] fix whacker numbering order
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

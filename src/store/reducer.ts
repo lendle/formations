@@ -91,7 +91,7 @@ const formationConfig = (
 const viewConfig = (
   state = {
     colorBy: ColorOption.PLANE,
-    numberBy: NumberOption.SLOT_NUM,
+    numberBy: NumberOption.SLOT_NUM_BY_PLANE,
     show: ShowOption.BOTH
   },
   action: ViewConfigActionTypes

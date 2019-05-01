@@ -70,7 +70,7 @@ export class OtterDrawer implements PlaneDrawer {
       .attr("text-anchor", "middle")
       .attr("dominant-baseline", "central")
       .attr("x", 0)
-      .attr("y", (-l + 1) * PLANE_SCALE_FACTOR)
+      .attr("y", (-l + 0.5) * PLANE_SCALE_FACTOR)
       .text(d => positionLabels[d.plane.position])
   }
 
@@ -100,19 +100,23 @@ export class SkyvanDrawer implements PlaneDrawer {
    *    11  12
    *     9  10
    *   ---------
-   *     7   8
-   *     5   6
-   *     3   4
+   *
+   *   7   8   9
+   *   3   4   5
    *   0   1   2
    *
    */
   private slotCoords = [
     //1st row
-    { x: -1, y: 6 },
-    { x: 0, y: 6 },
-    { x: 1, y: 6 },
+    ...d3
+      .range(3)
+      .flatMap(y => [
+        { x: -1, y: 6 - y },
+        { x: 0, y: 6 - y },
+        { x: 1, y: 6 - y }
+      ]),
     // the rest on back
-    ...d3.range(11).flatMap(y => [{ x: -0.5, y: 5 - y }, { x: 0.5, y: 5 - y }])
+    ...d3.range(8).flatMap(y => [{ x: -0.5, y: 2 - y }, { x: 0.5, y: 2 - y }])
   ]
   draw(g: Selection<SVGGElement, SlottedPlane, BaseType, any>) {
     g.append("path").attr("d", line(this.skyvanPoints)!)

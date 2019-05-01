@@ -43,6 +43,7 @@ const View = (props: Props) => {
 
   const numberBys = [
     { opt: NumberOption.SLOT_NUM, desc: "Slot Number" },
+    { opt: NumberOption.SLOT_NUM_BY_PLANE, desc: "Slot Number by Plane" },
     { opt: NumberOption.BUILD_ORDER, desc: "Build Order" }
   ].map(({ opt, desc }) => (
     <Dropdown.Item

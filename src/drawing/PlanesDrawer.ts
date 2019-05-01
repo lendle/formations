@@ -12,7 +12,8 @@ import {
   addSlot,
   updateSlot,
   transitionOut,
-  SlotDataFun
+  SlotDataFun,
+  baseLabel
 } from "./slotdatafuns"
 import { BaseType } from "d3"
 import { planeDrawers } from "./planedrawers"
@@ -107,7 +108,10 @@ export default class PlanesDrawer extends AbstractDrawer<PlanesArgs, void> {
       )
       .selection()
       .selectAll<SVGGElement, SlotData>("g.slot")
-      .data(d => d.slotData, d => `${d.formationSlotId}.${d.planeId}`)
+      .data(
+        d => d.slotData,
+        d => `${d.formationSlotId}.${d.planeId}.${d.plane.type}`
+      )
       .join(
         addSlot, //add slots on enter without initial coordinates or label
         undefined,
@@ -116,7 +120,7 @@ export default class PlanesDrawer extends AbstractDrawer<PlanesArgs, void> {
       .transition(t)
       .attr("transform", "scale(1)")
       .call(slotG => {
-        updateSlot(slotG, planeX, planeY, fill, label)
+        updateSlot(slotG, planeX, planeY, fill, baseLabel(label))
       })
   }
 }

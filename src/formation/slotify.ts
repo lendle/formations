@@ -1,12 +1,31 @@
-import { PlaneAssignment, Formation, Plane, SlotData } from "./interfaces"
-import lapwrapper from "./lapwrapper"
+import {
+  PlaneAssignment,
+  Formation,
+  Plane,
+  SlotData,
+  PlaenSlotAssignment
+} from "./interfaces"
+import lapwrapper, { combineScoreFuns } from "./lapwrapper"
 import * as d3 from "d3"
+import PlanePosition from "./PlanePosition"
+import { group as d3group } from "d3-array"
 
 const slotPlane = (
   plane: Plane,
   formation: Formation,
   formationSlotIds: number[]
 ) => {
+  const baseScore = (formationSlotId: number, planeSlotId: number) => {
+    if (plane.position === PlanePosition.LEAD) {
+      const baseIdIndex = formation.baseIds.findIndex(
+        id => id === formationSlotId
+      )
+      return planeSlotId === plane.baseIds[baseIdIndex] //if baseIdIndex is undefined, this will be falsy
+        ? 0
+        : 10000
+    }
+  }
+
   const score = (formationSlotId: number, planeSlotId: number) => {
     const slot = formation.slots[formationSlotId]
     const { reverseBuildOrder } = slot
@@ -17,16 +36,20 @@ const slotPlane = (
     return Math.abs(jr) * reverseBuildOrder * 100 - slotJr * jr + 1000
   }
 
-  return lapwrapper(formationSlotIds, d3.range(plane.filledSlots), score).map(
-    ([formationSlotId, planeSlotId]) => ({ formationSlotId, planeSlotId })
-  )
+  return lapwrapper(
+    formationSlotIds,
+    d3.range(plane.filledSlots),
+    plane.position === PlanePosition.LEAD
+      ? combineScoreFuns(baseScore)(score)
+      : score
+  ).map(([formationSlotId, planeSlotId]) => ({ formationSlotId, planeSlotId }))
 }
 
 export default function slotify(
   formation: Formation,
   planes: Plane[],
   planeAssignments: PlaneAssignment[]
-): SlotData[] {
+): PlaenSlotAssignment[] {
   return planes.flatMap((plane, planeId) => {
     const formationSlotIds = planeAssignments
       .filter(plane => plane.planeId === planeId)
@@ -36,12 +59,8 @@ export default function slotify(
 
     return planeSlotAssignments.map(({ formationSlotId, planeSlotId }) => ({
       formationSlotId,
-      formationSlot: formation.slots[formationSlotId],
-      formation,
       planeId,
-      plane,
-      planeSlotId,
-      planeSlot: plane.slots[planeSlotId]
+      planeSlotId
     }))
   })
 }

@@ -57,7 +57,7 @@ function lapwrapper<A, B>(
     const allScores = as.flatMap(a =>
       bs.map(b => ({ a, b, score: scoreFun(a, b) }))
     )
-    console.log("something's weird", {
+    console.error("something's weird", {
       allScores,
       result
     })

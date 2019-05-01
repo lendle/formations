@@ -20,6 +20,7 @@ export enum ColorOption {
 
 export enum NumberOption {
   SLOT_NUM,
+  SLOT_NUM_BY_PLANE,
   BUILD_ORDER
 }
 
