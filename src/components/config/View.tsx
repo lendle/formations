@@ -1,102 +1,130 @@
-export default null
-// import React, { Dispatch } from "react"
-// import { connect } from "react-redux"
-// import { Dropdown, Icon } from "semantic-ui-react"
-// import {
-//   ColorOption,
-//   NumberOption,
-//   ShowOption,
-//   ViewConfigState,
-//   ViewConfigActionTypes
-// } from "../../store/types"
-// import { setColorBy, setNumberBy, setShow } from "../../store/actions"
-// import { AppState } from "../../store/reducer"
+import React, { Dispatch } from "react"
+import { connect } from "react-redux"
+import {
+  ColorOption,
+  NumberOption,
+  ShowOption,
+  ViewConfigState,
+  ViewConfigActionTypes
+} from "../../store/types"
+import { setColorBy, setNumberBy, setShow } from "../../store/actions"
+import { AppState } from "../../store/reducer"
+import SettingsPanel from "./SettingsPanel"
+import { NumDict } from "../../formation/interfaces"
+import Select from "./Select"
 
-// type Props = {
-//   viewConfig: ViewConfigState;
-//   onSetColorBy: (opt: ColorOption) => void;
-//   onSetNumberBy: (opt: NumberOption) => void;
-//   onSetShow: (opt: ShowOption) => void;
-// }
-// const View = (props: Props) => {
-//   const { viewConfig, onSetColorBy, onSetNumberBy, onSetShow } = props
+type Props = {
+  viewConfig: ViewConfigState;
+  onSetColorBy: (opt: ColorOption) => void;
+  onSetNumberBy: (opt: NumberOption) => void;
+  onSetShow: (opt: ShowOption) => void;
+}
 
-//   const trigger = (
-//     <span>
-//       <Icon name="eye" /> <strong>View</strong>
-//     </span>
-//   )
+const colorBys = [
+  ColorOption.DEFAULT,
+  ColorOption.PLANE,
+  ColorOption.BUILD_ORDER,
+  ColorOption.RADIAL
+]
+const colorByDesc: NumDict<string> = {
+  [ColorOption.DEFAULT]: "Default",
+  [ColorOption.PLANE]: "Plane",
+  [ColorOption.BUILD_ORDER]: "Build Order",
+  [ColorOption.RADIAL]: "Radial"
+}
 
-//   const colorBys = [
-//     { opt: ColorOption.DEFAULT, desc: "Default" },
-//     { opt: ColorOption.PLANE, desc: "Plane" },
-//     { opt: ColorOption.BUILD_ORDER, desc: "Build Order" },
-//     { opt: ColorOption.RADIAL, desc: "Radial" }
-//   ].map(({ opt, desc }) => (
-//     <Dropdown.Item
-//       key={opt}
-//       onClick={() => onSetColorBy(opt)}
-//       active={viewConfig.colorBy === opt}
-//     >
-//       {desc}
-//     </Dropdown.Item>
-//   ))
+const numberBys = [
+  NumberOption.SLOT_NUM,
+  NumberOption.SLOT_NUM_BY_PLANE,
+  NumberOption.BUILD_ORDER
+]
 
-//   const numberBys = [
-//     { opt: NumberOption.SLOT_NUM, desc: "Slot Number" },
-//     { opt: NumberOption.SLOT_NUM_BY_PLANE, desc: "Slot Number by Plane" },
-//     { opt: NumberOption.BUILD_ORDER, desc: "Build Order" }
-//   ].map(({ opt, desc }) => (
-//     <Dropdown.Item
-//       key={opt}
-//       onClick={() => onSetNumberBy(opt)}
-//       active={viewConfig.numberBy === opt}
-//     >
-//       {desc}
-//     </Dropdown.Item>
-//   ))
+const numberByDesc: NumDict<string> = {
+  [NumberOption.SLOT_NUM]: "Slot Number",
+  [NumberOption.SLOT_NUM_BY_PLANE]: "Slot Number by Plane",
+  [NumberOption.BUILD_ORDER]: "Build Order"
+}
 
-//   const show = [
-//     { opt: ShowOption.FORMATION, desc: "Formation" },
-//     { opt: ShowOption.PLANES, desc: "Planes" },
-//     { opt: ShowOption.BOTH, desc: "Formation & Planes" }
-//   ].map(({ opt, desc }) => (
-//     <Dropdown.Item
-//       key={opt}
-//       onClick={() => onSetShow(opt)}
-//       active={viewConfig.show === opt}
-//     >
-//       {desc}
-//     </Dropdown.Item>
-//   ))
+const showOptions = [ShowOption.FORMATION, ShowOption.PLANES, ShowOption.BOTH]
 
-//   return (
-//     <Dropdown trigger={trigger} item>
-//       <Dropdown.Menu>
-//         <Dropdown.Header>Color by</Dropdown.Header>
-//         {colorBys}
-//         <Dropdown.Divider />
-//         <Dropdown.Header>Number by</Dropdown.Header>
-//         {numberBys}
-//         <Dropdown.Divider />
-//         <Dropdown.Header>Show</Dropdown.Header>
-//         {show}
-//       </Dropdown.Menu>
-//     </Dropdown>
-//   )
-// }
+const showOptionDesc: NumDict<string> = {
+  [ShowOption.FORMATION]: "Formation",
+  [ShowOption.PLANES]: "Planes",
+  [ShowOption.BOTH]: "Formation & Planes"
+}
 
-// const mapStateToProps = (state: AppState) => ({
-//   viewConfig: state.viewConfig
-// })
+const View = (props: Props) => {
+  const { viewConfig, onSetColorBy, onSetNumberBy, onSetShow } = props
 
-// const mapDispatchToProps = (dispatch: Dispatch<ViewConfigActionTypes>) => ({
-//   onSetColorBy: (colorBy: ColorOption) => dispatch(setColorBy(colorBy)),
-//   onSetNumberBy: (numberBy: NumberOption) => dispatch(setNumberBy(numberBy)),
-//   onSetShow: (show: ShowOption) => dispatch(setShow(show))
-// })
+  return (
+    <React.Fragment>
+      <SettingsPanel
+        name="colorby"
+        heading1="Color by"
+        heading2={colorByDesc[viewConfig.colorBy]}
+      >
+        <Select
+          label="Color by"
+          value={viewConfig.colorBy}
+          opts={colorBys}
+          desc={colorByDesc}
+          onSet={onSetColorBy}
+        />
+      </SettingsPanel>
+      <SettingsPanel
+        name="numberby"
+        heading1="Number by"
+        heading2={numberByDesc[viewConfig.numberBy]}
+      >
+        <Select
+          label="Number by"
+          value={viewConfig.numberBy}
+          opts={numberBys}
+          desc={numberByDesc}
+          onSet={onSetNumberBy}
+        />
+      </SettingsPanel>
+      <SettingsPanel
+        name="show"
+        heading1="Show"
+        heading2={showOptionDesc[viewConfig.show]}
+      >
+        <Select
+          label="Show"
+          value={viewConfig.show}
+          opts={showOptions}
+          desc={showOptionDesc}
+          onSet={onSetShow}
+        />
+      </SettingsPanel>
+    </React.Fragment>
 
-// export default connect(
-//   mapStateToProps,
-//   mapDispatchToProps
-// )(View)
+    // <Dropdown trigger={trigger} item>
+    //   <Dropdown.Menu>
+    //     <Dropdown.Header>Color by</Dropdown.Header>
+    //     {colorBys}
+    //     <Dropdown.Divider />
+    //     <Dropdown.Header>Number by</Dropdown.Header>
+    //     {numberBys}
+    //     <Dropdown.Divider />
+    //     <Dropdown.Header>Show</Dropdown.Header>
+    //     {show}
+    //   </Dropdown.Menu>
+    // </Dropdown>
+  )
+}
+
+const mapStateToProps = (state: AppState) => ({
+  viewConfig: state.viewConfig
+})
+
+const mapDispatchToProps = (dispatch: Dispatch<ViewConfigActionTypes>) => ({
+  onSetColorBy: (colorBy: ColorOption) => dispatch(setColorBy(colorBy)),
+  onSetNumberBy: (numberBy: NumberOption) => dispatch(setNumberBy(numberBy)),
+  onSetShow: (show: ShowOption) => dispatch(setShow(show))
+})
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(View)

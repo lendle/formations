@@ -8,9 +8,9 @@ import Typography from "@material-ui/core/Typography"
 import MenuIcon from "@material-ui/icons/Menu"
 import { makeStyles } from "@material-ui/styles"
 import React from "react"
-import { Divider, List } from "@material-ui/core"
+import Panels from "./Panels"
 
-const drawerWidth = 240
+const drawerWidth = 280
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -60,13 +60,6 @@ const ConfigDrawer: React.FunctionComponent<ConfigDrawerProps> = (
     setMobileOpen(!mobileOpen)
   }
 
-  const drawerContents = (
-    <React.Fragment>
-      <Divider />
-      <List>{props.contents}</List>
-    </React.Fragment>
-  )
-
   return (
     <div className={classes.root}>
       <AppBar position="fixed" className={classes.appBar}>
@@ -100,7 +93,7 @@ const ConfigDrawer: React.FunctionComponent<ConfigDrawerProps> = (
             }}
           >
             <div className={classes.toolbar} />
-            {drawerContents}
+            <Panels />
           </SwipeableDrawer>
         </Hidden>
         <Hidden xsDown implementation="css">
@@ -113,7 +106,7 @@ const ConfigDrawer: React.FunctionComponent<ConfigDrawerProps> = (
           >
             <div className={classes.toolbar} />
             <div />
-            {drawerContents}
+            <Panels />
           </Drawer>
         </Hidden>
       </nav>
