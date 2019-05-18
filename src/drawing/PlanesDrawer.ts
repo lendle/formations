@@ -17,7 +17,7 @@ import {
 } from "./slotdatafuns"
 import { BaseType } from "d3"
 import { planeDrawers } from "./planedrawers"
-import { SlottedPlane } from "./interfaces"
+import { SlottedPlane, Box } from "./interfaces"
 
 const planeCoordinates = ({
   planes,
@@ -122,5 +122,11 @@ export default class PlanesDrawer extends AbstractDrawer<PlanesArgs, void> {
       .call(slotG => {
         updateSlot(slotG, planeX, planeY, fill, baseLabel(label))
       })
+
+    // slotsByPlane.reduce((box, {plane}) => {
+    //   const c = p2c.get(plane.position)!
+
+    //   return box
+    // }, { x0: 0, y0: 0, x1: 0, y1:0})
   }
 }

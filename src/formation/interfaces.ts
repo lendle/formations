@@ -1,6 +1,7 @@
 import Polar from "../geometry/Polar"
 import PlanePosition from "./PlanePosition"
 import { PlaneType, FormationType } from "../store/types"
+import { Box } from "../geometry/Box"
 
 export type NumDict<V> = { [index: number]: V }
 
@@ -49,6 +50,7 @@ export interface SlotCollection<S extends BaseSlot> {
 export interface Formation extends SlotCollection<FormationSlot> {
   baseIds: number[]
   radius: number
+  bbox: Box
   type: FormationType
 }
 

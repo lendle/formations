@@ -7,6 +7,7 @@ import { FormationSlot, Formation } from "./interfaces"
 import * as d3 from "d3"
 import { FormationType } from "../store/types"
 import { PI } from "../constants"
+import { Box } from "../geometry/Box"
 
 type Ring = Component[]
 type Dock = { c: Component; s: number }
@@ -220,6 +221,13 @@ class FormationImpl extends AbstractSlotCollection<FormationSlot>
       ({ position, offset }) => position.plus(offset).radius
     )
     return Math.max(...slotRadi)
+  }
+
+  get bbox(): Box {
+    return this.slots.reduce(
+      (b, { position, offset }) => b.expand(position.plus(offset)),
+      new Box(0, 0, 0, 0)
+    )
   }
 
   reverseBuildOrder() {

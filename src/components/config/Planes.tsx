@@ -38,16 +38,6 @@ const PlaneMenu = (props: PlaneMenuProps) => {
   const { planeConfig, setters } = props
   const { position, label, slotting, type, slots } = planeConfig
   const { onPlaneSlottingSet, onPlaneTypeSet, onPlaneSlotsSet } = setters
-  const trigger = (
-    <div>
-      <strong>{label}</strong>: {typeDescriptions[type]}
-      {type !== PlaneType.NONE
-        ? `, ${slots} slots, ${
-            slotting === Slotting.FILL ? "filled" : "slotted evenly"
-          }`
-        : null}
-    </div>
-  )
 
   const types =
     position === PlanePosition.LEAD

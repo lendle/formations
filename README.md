@@ -3,8 +3,8 @@
 - [1/2] super float
 - [1/2] video
 - [ ] fix whacker numbering order
-- [ ] autozoom
-- [ ] ui
+- [1/2] autozoom
+- [ ] pdf
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

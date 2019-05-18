@@ -28,3 +28,10 @@ export interface SlottedPlane {
   plane: Plane
   slotData: SlotData[]
 }
+
+export interface Box {
+  x0: number
+  y0: number
+  x1: number
+  y1: number
+}

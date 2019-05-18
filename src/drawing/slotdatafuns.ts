@@ -91,8 +91,6 @@ export const translate = (d: SlotData) =>
 export const planeX = (d: SlotData) => planeDrawers[d.plane.type].x(d)
 export const planeY = (d: SlotData) => planeDrawers[d.plane.type].y(d)
 
-export const FORMATION_SCALE_FACTOR = 40
-
 export const highlight = (d: SlotData) => {
   d3.selectAll(`[formationSlotId="${d.formationSlotId}"].slot circle`)
     .transition()

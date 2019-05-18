@@ -1,7 +1,6 @@
 import { SlotData } from "../formation/interfaces"
-import * as d3 from "d3"
 import AbstractDrawer from "./AbstractDrawer"
-import { ViewConfigState, ShowOption } from "../store/types"
+import { ViewConfigState, ShowOption, FormationType } from "../store/types"
 import {
   x,
   y,
@@ -13,6 +12,8 @@ import {
   SlotDataFun
 } from "./slotdatafuns"
 import { Transition, BaseType } from "d3"
+import { SCALE_FACTOR } from "../constants"
+import { Box } from "../geometry/Box"
 
 interface FormationArgs {
   slots: SlotData[]
@@ -22,7 +23,7 @@ interface FormationArgs {
 }
 export default class FormationDrawer extends AbstractDrawer<
   FormationArgs,
-  void
+  Box
 > {
   draw(
     { slots, viewConfig, fill, label }: FormationArgs,
@@ -56,5 +57,12 @@ export default class FormationDrawer extends AbstractDrawer<
         g.select("path").attr("d", arc)
         updateSlot(g, x, y, fill, label)
       })
+
+    if (viewConfig.show === ShowOption.PLANES) {
+      return new Box(-1, -1, 1, 1).scale(SCALE_FACTOR)
+    }
+
+    const box = slotData[0].formation.bbox.scale(SCALE_FACTOR)
+    return slotData[0].formation.type === FormationType.HD ? box.flipX() : box
   }
 }

@@ -98,19 +98,6 @@ const View = (props: Props) => {
         />
       </SettingsPanel>
     </React.Fragment>
-
-    // <Dropdown trigger={trigger} item>
-    //   <Dropdown.Menu>
-    //     <Dropdown.Header>Color by</Dropdown.Header>
-    //     {colorBys}
-    //     <Dropdown.Divider />
-    //     <Dropdown.Header>Number by</Dropdown.Header>
-    //     {numberBys}
-    //     <Dropdown.Divider />
-    //     <Dropdown.Header>Show</Dropdown.Header>
-    //     {show}
-    //   </Dropdown.Menu>
-    // </Dropdown>
   )
 }
 
