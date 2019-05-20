@@ -159,6 +159,11 @@ const addRings = (slots: number, baseSize: number, rings: Ring[]): Ring[] => {
         const leftHandSlots = Math.floor(slotsToFill / 2)
         const rightHandSlots = leftHandSlots + (slotsToFill % 2) //if odd number, right hand whacker gets the extra
         const whackers = []
+        if (rightHandSlots > 0) {
+          whackers.push(
+            new Whacker(rightHandSlots, priorSlots, right, "right")
+          )
+        }
         if (leftHandSlots > 0) {
           whackers.push(
             new Whacker(
@@ -169,11 +174,7 @@ const addRings = (slots: number, baseSize: number, rings: Ring[]): Ring[] => {
             )
           )
         }
-        if (rightHandSlots > 0) {
-          whackers.push(
-            new Whacker(rightHandSlots, priorSlots, right, "right")
-          )
-        }
+
         return whackers
       }
     }

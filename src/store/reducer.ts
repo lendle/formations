@@ -73,7 +73,7 @@ const planesConfig = (
 }
 
 const formationConfig = (
-  state = { slots: 42, baseSize: 6, type: FormationType.HD },
+  state = { slots: 10, baseSize: 6, type: FormationType.HD },
   action: FormationConfigActionTypes
 ): FormationConfigState => {
   switch (action.type) {
