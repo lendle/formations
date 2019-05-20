@@ -1,6 +1,7 @@
 import { SlotData, Plane } from "../formation/interfaces"
 import { BaseType } from "d3"
 import { y } from "./slotdatafuns"
+import { Box } from "../geometry/Box"
 
 export interface Drawer<Args, ReturnArgs> {
   group: d3.Selection<SVGGElement, {}, null, undefined>
@@ -22,16 +23,10 @@ export interface PlaneDrawer {
 
   x(d: SlotData): number
   y(d: SlotData): number
+  box: Box
 }
 
 export interface SlottedPlane {
   plane: Plane
   slotData: SlotData[]
-}
-
-export interface Box {
-  x0: number
-  y0: number
-  x1: number
-  y1: number
 }

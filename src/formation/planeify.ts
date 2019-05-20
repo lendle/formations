@@ -5,7 +5,6 @@ import { PI } from "../constants"
 import approxeq from "../util/approxeq"
 import lapwrapper, { combineScoreFuns } from "./lapwrapper"
 import { range } from "d3"
-import { FormationType } from "../store/types"
 
 /**
  * Puts people in planes

@@ -62,19 +62,30 @@ export default class FormationComponent extends React.Component<
     )
     this.planesDrawer = new PlanesDrawer().withGroup(this.allGrp.append("g"))
 
-    const box = this.formationDrawer.draw(this.props, t)
+    const formationBox = this.formationDrawer.draw(this.props, t)
+    const planeBox = this.planesDrawer.draw(this.props, t)
 
-    this.planesDrawer.draw(this.props, t)
+    // console.log({ box, planeBox })
 
-    this.zoomToBox(box, t)
+    // this.allGrp
+    //   .append("rect")
+    //   .attr("x", planeBox.x0)
+    //   .attr("y", planeBox.y0)
+    //   .attr("width", planeBox.width)
+    //   .attr("height", planeBox.height)
+    //   .attr("fill", "none")
+    //   .attr("stroke-widht", 1)
+    //   .attr("stroke", "black")
+
+    this.zoomToBox(formationBox.union(planeBox), t)
   }
 
   componentDidUpdate() {
     const t = d3.transition().duration(1000) as Transition
-    const box = this.formationDrawer.draw(this.props, t)
-    this.planesDrawer.draw(this.props, t)
+    const formationBox = this.formationDrawer.draw(this.props, t)
+    const planeBox = this.planesDrawer.draw(this.props, t)
 
-    this.zoomToBox(box, t)
+    this.zoomToBox(formationBox.union(planeBox), t)
   }
 
   zoomToBox(box: Box, t: Transition) {
@@ -99,7 +110,7 @@ export default class FormationComponent extends React.Component<
       <svg
         width={"100%"}
         height={"100%"}
-        ref={element => (this.svg = d3.select(element!))}
+        ref={element => (this.svg = d3.select(element!).attr("id", "svg"))}
       />
     )
   }

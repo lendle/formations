@@ -31,7 +31,7 @@ const initialPlaneState: PlaneState[] = [
     position: LEAD,
     label: "Lead",
     slotting: Slotting.SPLIT,
-    type: PlaneType.OTTER,
+    type: PlaneType.SKYVAN,
     slots: 23
   },
   {

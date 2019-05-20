@@ -6,6 +6,8 @@ import SwipeableDrawer from "@material-ui/core/SwipeableDrawer"
 import Toolbar from "@material-ui/core/Toolbar"
 import Typography from "@material-ui/core/Typography"
 import MenuIcon from "@material-ui/icons/Menu"
+import PdfIcon from "@material-ui/icons/PictureAsPdf"
+
 import { makeStyles } from "@material-ui/styles"
 import React from "react"
 import Panels from "./Panels"
@@ -38,6 +40,9 @@ const useStyles = makeStyles(theme => ({
   toolbar: theme.mixins.toolbar,
   drawerPaper: {
     width: drawerWidth
+  },
+  heading: {
+    flexGrow: 1
   },
   content: {
     flexGrow: 1,
@@ -72,9 +77,17 @@ const ConfigDrawer: React.FunctionComponent<ConfigDrawerProps> = (
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" color="inherit" noWrap>
+          <Typography
+            variant="h6"
+            color="inherit"
+            noWrap
+            className={classes.heading}
+          >
             Formations
           </Typography>
+          <IconButton color="inherit" aria-label="PDF">
+            <PdfIcon />
+          </IconButton>
         </Toolbar>
       </AppBar>
       <nav className={classes.drawer}>

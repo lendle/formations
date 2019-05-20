@@ -64,7 +64,7 @@ export class PlaneImpl extends AbstractSlotCollection<PlaneSlot>
       case PlaneType.OTTER:
         return [7, 8, 9, 10, 11, 4, 3, 2, 5, 12]
       case PlaneType.SKYVAN:
-        return [3, 4, 5, 8, 7, 9, 1, 9, 10, 11]
+        return [3, 4, 5, 8, 7, 6, 0, 1, 9, 10]
       default:
         return d3.range(10)
     }

@@ -2,13 +2,11 @@ import {
   PlaneAssignment,
   Formation,
   Plane,
-  SlotData,
   PlaenSlotAssignment
 } from "./interfaces"
 import lapwrapper, { combineScoreFuns } from "./lapwrapper"
 import * as d3 from "d3"
 import PlanePosition from "./PlanePosition"
-import { group as d3group } from "d3-array"
 
 const slotPlane = (
   plane: Plane,

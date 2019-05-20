@@ -223,7 +223,7 @@ class FormationImpl extends AbstractSlotCollection<FormationSlot>
     return Math.max(...slotRadi)
   }
 
-  get bbox(): Box {
+  get box(): Box {
     return this.slots.reduce(
       (b, { position, offset }) => b.expand(position.plus(offset)),
       new Box(0, 0, 0, 0)

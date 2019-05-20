@@ -50,7 +50,7 @@ export interface SlotCollection<S extends BaseSlot> {
 export interface Formation extends SlotCollection<FormationSlot> {
   baseIds: number[]
   radius: number
-  bbox: Box
+  box: Box
   type: FormationType
 }
 

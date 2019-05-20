@@ -17,7 +17,9 @@ import {
 } from "./slotdatafuns"
 import { BaseType } from "d3"
 import { planeDrawers } from "./planedrawers"
-import { SlottedPlane, Box } from "./interfaces"
+import { SlottedPlane } from "./interfaces"
+import { Box } from "../geometry/Box"
+import { ConsoleView } from "react-device-detect"
 
 const planeCoordinates = ({
   planes,
@@ -66,7 +68,7 @@ interface PlanesArgs {
   fill: SlotDataFun
   label: SlotDataFun
 }
-export default class PlanesDrawer extends AbstractDrawer<PlanesArgs, void> {
+export default class PlanesDrawer extends AbstractDrawer<PlanesArgs, Box> {
   draw(args: PlanesArgs, t: d3.Transition<BaseType, any, any, any>) {
     const p2c = planeCoordinates(args)
 
@@ -123,7 +125,11 @@ export default class PlanesDrawer extends AbstractDrawer<PlanesArgs, void> {
         updateSlot(slotG, planeX, planeY, fill, baseLabel(label))
       })
 
-    // slotsByPlane.reduce((box, {plane}) => {
+    return slotsByPlane.reduce((box, { plane }) => {
+      return box.union(
+        planeDrawers[plane.type].box.translate(p2c.get(plane.position)!)
+      )
+    }, new Box(0, 0, 0, 0))
     //   const c = p2c.get(plane.position)!
 
     //   return box

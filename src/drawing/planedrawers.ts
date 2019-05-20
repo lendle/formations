@@ -4,6 +4,7 @@ import { Selection, BaseType } from "d3"
 import PlanePosition from "../formation/PlanePosition"
 import { PlaneType } from "../store/types"
 import { SlotData, NumDict } from "../formation/interfaces"
+import { Box } from "../geometry/Box"
 
 const PLANE_SCALE_FACTOR = 40
 
@@ -76,6 +77,8 @@ export class OtterDrawer implements PlaneDrawer {
 
   x = (d: SlotData) => this.slotCoords[d.planeSlotId].x * PLANE_SCALE_FACTOR
   y = (d: SlotData) => this.slotCoords[d.planeSlotId].y * PLANE_SCALE_FACTOR
+
+  box = new Box(-w - 1, -l, w, l).scale(PLANE_SCALE_FACTOR)
 }
 
 export class SkyvanDrawer implements PlaneDrawer {
@@ -101,7 +104,7 @@ export class SkyvanDrawer implements PlaneDrawer {
    *     9  10
    *   ---------
    *
-   *   7   8   9
+   *   6   7   8
    *   3   4   5
    *   0   1   2
    *
@@ -138,6 +141,8 @@ export class SkyvanDrawer implements PlaneDrawer {
 
   x = (d: SlotData) => this.slotCoords[d.planeSlotId].x * PLANE_SCALE_FACTOR
   y = (d: SlotData) => this.slotCoords[d.planeSlotId].y * PLANE_SCALE_FACTOR
+
+  box = new Box(-w, -l, w, l).scale(PLANE_SCALE_FACTOR)
 }
 
 export const planeDrawers: NumDict<PlaneDrawer> = {

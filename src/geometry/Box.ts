@@ -45,6 +45,10 @@ export class Box {
     )
   }
 
+  translate(p: Polar): Box {
+    return new Box(this.x0 + p.x, this.y0 + p.y, this.x1 + p.x, this.y1 + p.y)
+  }
+
   union(b: Box): Box {
     return new Box(
       Math.min(this.x0, b.x0),

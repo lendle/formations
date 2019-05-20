@@ -62,7 +62,7 @@ export default class FormationDrawer extends AbstractDrawer<
       return new Box(-1, -1, 1, 1).scale(SCALE_FACTOR)
     }
 
-    const box = slotData[0].formation.bbox.scale(SCALE_FACTOR)
+    const box = slotData[0].formation.box.scale(SCALE_FACTOR)
     return slotData[0].formation.type === FormationType.HD ? box.flipX() : box
   }
 }
