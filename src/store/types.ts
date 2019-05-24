@@ -121,3 +121,8 @@ export type ViewConfigActionTypes =
   | SetColorByAction
   | SetNumberByAction
   | SetShowAction
+
+export const REFRESH_STATE = "REFRESH_STATE"
+export interface RefreshStateAction {
+  type: typeof REFRESH_STATE
+}

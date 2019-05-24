@@ -6,11 +6,15 @@ import SwipeableDrawer from "@material-ui/core/SwipeableDrawer"
 import Toolbar from "@material-ui/core/Toolbar"
 import Typography from "@material-ui/core/Typography"
 import MenuIcon from "@material-ui/icons/Menu"
-import PdfIcon from "@material-ui/icons/PictureAsPdf"
+import RefreshIcon from "@material-ui/icons/Refresh"
 
 import { makeStyles } from "@material-ui/styles"
 import React from "react"
 import Panels from "./Panels"
+import { RefreshStateAction } from "../../store/types"
+import { Dispatch } from "redux"
+import { refreshState } from "../../store/actions"
+import { connect } from "react-redux"
 
 const drawerWidth = 280
 
@@ -54,6 +58,7 @@ const useStyles = makeStyles(theme => ({
 interface ConfigDrawerProps {
   contents?: React.ReactNode
   children?: React.ReactNode
+  onRefreshState: () => void
 }
 const ConfigDrawer: React.FunctionComponent<ConfigDrawerProps> = (
   props: ConfigDrawerProps
@@ -86,7 +91,7 @@ const ConfigDrawer: React.FunctionComponent<ConfigDrawerProps> = (
             Formations
           </Typography>
           <IconButton color="inherit" aria-label="PDF">
-            <PdfIcon />
+            <RefreshIcon onClick={props.onRefreshState} />
           </IconButton>
         </Toolbar>
       </AppBar>
@@ -131,4 +136,11 @@ const ConfigDrawer: React.FunctionComponent<ConfigDrawerProps> = (
   )
 }
 
-export default ConfigDrawer
+const mapDispatchToProps = (dispatch: Dispatch<RefreshStateAction>) => ({
+  onRefreshState: () => dispatch(refreshState())
+})
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(ConfigDrawer)

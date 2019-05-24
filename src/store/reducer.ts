@@ -1,4 +1,4 @@
-import { combineReducers } from "redux"
+import { combineReducers, Reducer, AnyAction } from "redux"
 import PlanePosition from "../formation/PlanePosition"
 import {
   PlaneState,
@@ -21,7 +21,8 @@ import {
   PlanesConfigActionTypes,
   ViewConfigActionTypes,
   SET_SHOW,
-  ShowOption
+  ShowOption,
+  REFRESH_STATE
 } from "./types"
 
 const { LEAD, LT, RT } = PlanePosition
@@ -116,4 +117,13 @@ const rootReducer = combineReducers({
 
 export type AppState = ReturnType<typeof rootReducer>
 
-export default rootReducer
+const refreshingReducer: Reducer<AppState, AnyAction> = (state, action) => {
+  switch (action.type) {
+    case REFRESH_STATE:
+      return rootReducer(undefined, action)
+    default:
+      return rootReducer(state, action)
+  }
+}
+
+export default refreshingReducer

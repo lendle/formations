@@ -16,7 +16,9 @@ import {
   PlanesConfigActionTypes,
   ViewConfigActionTypes,
   ShowOption,
-  SET_SHOW
+  SET_SHOW,
+  REFRESH_STATE,
+  RefreshStateAction
 } from "./types"
 import PlanePosition from "../formation/PlanePosition"
 
@@ -78,3 +80,5 @@ export const setShow = (show: ShowOption): ViewConfigActionTypes => ({
   type: SET_SHOW,
   show
 })
+
+export const refreshState = (): RefreshStateAction => ({ type: REFRESH_STATE })

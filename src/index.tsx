@@ -2,15 +2,13 @@ import "./bootstrap"
 import React from "react"
 import ReactDOM from "react-dom"
 import { Provider } from "react-redux"
-import { createStore } from "redux"
-import { composeWithDevTools } from "redux-devtools-extension"
 import App from "./components/App"
 import * as serviceWorker from "./serviceWorker"
-import reducer from "./store/reducer"
 import CssBaseline from "@material-ui/core/CssBaseline"
 import "typeface-roboto"
 import { createMuiTheme } from "@material-ui/core"
 import { ThemeProvider } from "@material-ui/styles"
+import configureStore from "./store/configureStore"
 
 const theme = createMuiTheme({
   typography: {
@@ -18,7 +16,7 @@ const theme = createMuiTheme({
   }
 })
 
-const store = createStore(reducer, composeWithDevTools())
+const store = configureStore()
 
 ReactDOM.render(
   <Provider store={store}>

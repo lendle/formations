@@ -14,6 +14,8 @@
     "@types/react": "^16.8.13",
     "@types/react-dom": "^16.8.4",
     "@types/react-redux": "^7.0.7",
+    "@types/redux-storage": "^4.1.0",
+    "@types/redux-storage-engine-localstorage": "^1.1.1",
     "d3": "^5.9.2",
     "d3-array": "^2.0.3",
     "gh-pages": "^2.0.1",
@@ -24,6 +26,8 @@
     "react-dom": "^16.8.6",
     "react-redux": "^7.0.1",
     "redux": "^4.0.1",
+    "redux-storage": "^4.1.2",
+    "redux-storage-engine-localstorage": "^1.1.4",
     "reselect": "^4.0.0",
     "typeface-roboto": "0.0.54"
   },
