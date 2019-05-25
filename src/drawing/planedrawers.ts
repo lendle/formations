@@ -6,7 +6,7 @@ import { PlaneType } from "../store/types"
 import { SlotData, NumDict } from "../formation/interfaces"
 import { Box } from "../geometry/Box"
 
-const PLANE_SCALE_FACTOR = 40
+export const PLANE_SCALE_FACTOR = 40
 
 type XY = {
   x: number;
@@ -22,7 +22,7 @@ const positionLabels = {
 const w = 1.5
 const l = 6.5
 
-const line = d3
+export const line = d3
   .line<XY>()
   .x(d => d.x * PLANE_SCALE_FACTOR)
   .y(d => d.y * PLANE_SCALE_FACTOR)
@@ -72,7 +72,7 @@ export class OtterDrawer implements PlaneDrawer {
       .attr("dominant-baseline", "central")
       .attr("x", 0)
       .attr("y", (-l + 0.5) * PLANE_SCALE_FACTOR)
-      .text(d => positionLabels[d.plane.position])
+      .text(d => `${positionLabels[d.plane.position]}`)
   }
 
   x = (d: SlotData) => this.slotCoords[d.planeSlotId].x * PLANE_SCALE_FACTOR

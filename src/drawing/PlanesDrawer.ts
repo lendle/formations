@@ -16,7 +16,7 @@ import {
   baseLabel
 } from "./slotdatafuns"
 import { BaseType } from "d3"
-import { planeDrawers } from "./planedrawers"
+import { planeDrawers, line, PLANE_SCALE_FACTOR } from "./planedrawers"
 import { SlottedPlane } from "./interfaces"
 import { Box } from "../geometry/Box"
 import { ConsoleView } from "react-device-detect"
@@ -60,6 +60,80 @@ const planeCoordinates = ({
   }
 }
 
+const labelPosition = ({ formation: { radius, type } }: PlanesArgs) => {
+  const coord = new Polar(Math.max(7, radius + 3) * SCALE_FACTOR, TAU / 12)
+  return type === FormationType.HD ? coord : coord.flip(PI / 2) // flip on opposite side of lead plane
+}
+
+const drawLabel = (
+  group: d3.Selection<SVGGElement, {}, null, undefined>,
+  formation: Formation,
+  t: d3.Transition<d3.BaseType, any, any, any>,
+  labelCoord: Polar
+) => {
+  group
+    .selectAll<SVGGElement, Formation>("g.label")
+    .data([formation])
+    .join(enter =>
+      enter
+        .append("g")
+        .classed("label", true)
+        .call(g => {
+          g.append("path")
+            .attr("d", line([{ x: 0, y: 0 }, { x: 0, y: -4 }])!)
+            .attr("stroke-width", 3)
+            .attr("stroke", "black")
+
+          g.append("path")
+            .attr("d", line([{ x: -1, y: -3 }, { x: 0, y: -4 }])!)
+            .attr("stroke-width", 3)
+            .attr("stroke", "black")
+
+          g.append("path")
+            .attr("d", line([{ x: 1, y: -3 }, { x: 0, y: -4 }])!)
+            .attr("stroke-width", 3)
+            .attr("stroke", "black")
+          g.append("text")
+            .classed("type", true)
+            .attr("text-anchor", "middle")
+            .attr("dominant-baseline", "central")
+            .attr("x", 0)
+            .attr("y", PLANE_SCALE_FACTOR)
+
+          g.append("text")
+            .classed("slots", true)
+            .attr("text-anchor", "middle")
+            .attr("dominant-baseline", "central")
+            .attr("x", 0)
+            .attr("y", 2 * PLANE_SCALE_FACTOR)
+        })
+        .attr("transform", "translate(0,0) scale(0)")
+    )
+    .call(g => {
+      g.select("text.type").text(d => {
+        switch (d.type) {
+          case FormationType.HD:
+            return "Head Down from below"
+          case FormationType.HD_ABOVE:
+            return "Head Down from above"
+          case FormationType.HU:
+            return "Head Up"
+          default:
+            return "Unknown formation type"
+        }
+      })
+      g.select("text.slots").text(d => `${d.slots.length} slots`)
+    })
+    .transition(t)
+    .attr("transform", `translate(${labelCoord.x}, ${labelCoord.y})`)
+
+  const labelBox = new Box(-3, -2, 3, 4)
+    .scale(PLANE_SCALE_FACTOR)
+    .translate(labelCoord)
+
+  return labelBox
+}
+
 interface PlanesArgs {
   slots: SlotData[]
   planes: Plane[]
@@ -71,6 +145,7 @@ interface PlanesArgs {
 export default class PlanesDrawer extends AbstractDrawer<PlanesArgs, Box> {
   draw(args: PlanesArgs, t: d3.Transition<BaseType, any, any, any>) {
     const p2c = planeCoordinates(args)
+    const labelCoord = labelPosition(args)
 
     const { fill, label } = args
 
@@ -125,11 +200,14 @@ export default class PlanesDrawer extends AbstractDrawer<PlanesArgs, Box> {
         updateSlot(slotG, planeX, planeY, fill, baseLabel(label))
       })
 
+    const labelBox = drawLabel(this.group, args.formation, t, labelCoord)
+
     return slotsByPlane.reduce((box, { plane }) => {
       return box.union(
         planeDrawers[plane.type].box.translate(p2c.get(plane.position)!)
       )
-    }, new Box(0, 0, 0, 0))
+    }, labelBox)
+
     //   const c = p2c.get(plane.position)!
 
     //   return box

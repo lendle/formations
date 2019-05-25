@@ -90,8 +90,8 @@ const ConfigDrawer: React.FunctionComponent<ConfigDrawerProps> = (
           >
             Formations
           </Typography>
-          <IconButton color="inherit" aria-label="PDF">
-            <RefreshIcon onClick={props.onRefreshState} />
+          <IconButton color="inherit" onClick={props.onRefreshState}>
+            <RefreshIcon />
           </IconButton>
         </Toolbar>
       </AppBar>
