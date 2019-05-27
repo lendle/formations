@@ -1,4 +1,9 @@
-import { Plane, SlotData, Formation } from "../formation/interfaces"
+import {
+  Plane,
+  SlotData,
+  Formation,
+  FormationSlot
+} from "../formation/interfaces"
 import AbstractDrawer from "./AbstractDrawer"
 import * as d3 from "d3"
 import { group as d3Group } from "d3-array"
@@ -156,21 +161,29 @@ export default class PlanesDrawer extends AbstractDrawer<PlanesArgs, Box> {
         : Array.from(d3Group(args.slots, d => d.plane))
             .map(([plane, slotData]) => ({ plane, slotData }))
             .map(({ plane, slotData }) => {
+              // add in psuedo slot for video if plane has it
+
+              const dummyFormationSlot: FormationSlot = {
+                reverseBuildOrder: 0,
+                buildOrder: 0,
+                offset: new Polar(0, 0),
+                position: new Polar(0, 0),
+                dockAngle: 0
+              }
+              const videoSlot = {
+                formationSlotId: -1,
+                formation: args.formation,
+                formationSlot: dummyFormationSlot,
+                planeId: slotData[0] ? slotData[0].planeId : -1,
+                plane: plane,
+                planeSlotId: plane.videoId,
+                byPlaneSlotId: -1
+              }
+
               if (plane.hasVideo) {
                 return {
                   plane,
-                  slotData: [
-                    ...slotData,
-                    {
-                      formationSlotId: -1,
-                      formation: slotData[0].formation,
-                      formationSlot: slotData[0].formationSlot,
-                      planeId: slotData[0].planeId,
-                      plane: plane,
-                      planeSlotId: plane.videoId,
-                      byPlaneSlotId: -1
-                    }
-                  ]
+                  slotData: [...slotData, videoSlot]
                 }
               } else {
                 return { plane, slotData }
