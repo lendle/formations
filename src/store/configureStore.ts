@@ -12,7 +12,7 @@ const store = createStore(
   composeWithDevTools(applyMiddleware(middleware))
 )
 const load = storage.createLoader(engine)
-load(store)
+// load(store)
 
 export default () => {
   return store

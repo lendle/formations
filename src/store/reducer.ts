@@ -33,21 +33,27 @@ const initialPlaneState: PlaneState[] = [
     label: "Lead",
     slotting: Slotting.SPLIT,
     type: PlaneType.SKYVAN,
-    slots: 23
+    slots: 23,
+    hasSuperFloat: false,
+    hasVideo: true
   },
   {
     position: LT,
     label: "Left Trail",
     slotting: Slotting.SPLIT,
     type: PlaneType.NONE,
-    slots: 23
+    slots: 23,
+    hasSuperFloat: false,
+    hasVideo: false
   },
   {
     position: RT,
     label: "Right Trail",
     slotting: Slotting.SPLIT,
     type: PlaneType.OTTER,
-    slots: 23
+    slots: 23,
+    hasSuperFloat: false,
+    hasVideo: false
   }
 ]
 

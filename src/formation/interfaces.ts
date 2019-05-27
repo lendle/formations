@@ -12,7 +12,7 @@ export interface PlaneAssignment {
   planeId: number
 }
 
-export interface PlaenSlotAssignment extends PlaneAssignment {
+export interface PlaneSlotAssignment extends PlaneAssignment {
   planeSlotId: number
 }
 
@@ -62,4 +62,6 @@ export interface Plane extends SlotCollection<PlaneSlot> {
   baseIds: number[]
   videoId: number
   superFloatId: number
+  hasVideo: boolean
+  hasSuperFloat: boolean
 }

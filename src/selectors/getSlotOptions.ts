@@ -24,10 +24,10 @@ const slotOptions = (
 ): SlotOptions => {
   const { min, max } = planesConfig
     .filter(({ type }) => type !== PlaneType.NONE)
-    .map(({ slotting, slots }) => ({
+    .map(({ slotting, slots, hasVideo }) => ({
       //compute min/max slots on each plane
       planeMin: slotting === Slotting.FILL ? slots : 0,
-      planeMax: slots
+      planeMax: slots - (hasVideo ? 1 : 0)
     }))
     .reduce(
       ({ min, max }, { planeMin, planeMax }) => ({

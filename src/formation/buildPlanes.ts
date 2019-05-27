@@ -132,7 +132,13 @@ export default (
   )
 
   return planesConfig.map(
-    ({ position, type }) =>
-      new PlaneImpl(position, slotsMap.get(position)!, type)
+    ({ position, type, hasVideo, hasSuperFloat }) =>
+      new PlaneImpl(
+        position,
+        slotsMap.get(position)!,
+        type,
+        hasVideo,
+        hasSuperFloat
+      )
   )
 }

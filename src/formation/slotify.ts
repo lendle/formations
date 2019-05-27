@@ -2,7 +2,7 @@ import {
   PlaneAssignment,
   Formation,
   Plane,
-  PlaenSlotAssignment
+  PlaneSlotAssignment
 } from "./interfaces"
 import lapwrapper, { combineScoreFuns } from "./lapwrapper"
 import * as d3 from "d3"
@@ -13,14 +13,42 @@ const slotPlane = (
   formation: Formation,
   formationSlotIds: number[]
 ) => {
+  /**
+   * if formationSlotId is a base slot, should return 0 for the right base slot and a big number everywher eelse
+   * if formationSlotId is not a base slot, should return a big number if planeSlotId is a base slot
+   * @param formationSlotId
+   * @param planeSlotId
+   */
   const baseScore = (formationSlotId: number, planeSlotId: number) => {
     if (plane.position === PlanePosition.LEAD) {
-      const baseIdIndex = formation.baseIds.findIndex(
-        id => id === formationSlotId
-      )
-      return planeSlotId === plane.baseIds[baseIdIndex] //if baseIdIndex is undefined, this will be falsy
-        ? 0
-        : 10000
+      if (formation.baseIds.includes(formationSlotId)) {
+        //formationSlotId is a base slot
+
+        //get which base slot it is
+        const baseIdIndex = formation.baseIds.findIndex(
+          id => id === formationSlotId
+        )
+
+        //0 score for that slot in plane, otherwise big
+        return planeSlotId === plane.baseIds[baseIdIndex] ? 0 : 10000
+      } else {
+        //formationSlotId is not a base slot
+
+        const baseSize = formation.baseIds.length
+
+        if (plane.baseIds.slice(0, baseSize).includes(planeSlotId)) {
+          //this plane slot should be in the base but isn't, give big score
+          return 10000
+        }
+      }
+    }
+  }
+
+  const specialSlotScore = (formationSlotId: number, planeSlotId: number) => {
+    if (plane.hasVideo) {
+      if (planeSlotId === plane.videoId) {
+        return 100000
+      }
     }
   }
 
@@ -36,10 +64,10 @@ const slotPlane = (
 
   return lapwrapper(
     formationSlotIds,
-    d3.range(plane.filledSlots),
+    d3.range(plane.filledSlots + (plane.hasVideo ? 1 : 0)),
     plane.position === PlanePosition.LEAD
-      ? combineScoreFuns(baseScore)(score)
-      : score
+      ? combineScoreFuns(specialSlotScore, baseScore)(score)
+      : combineScoreFuns(specialSlotScore)(score)
   ).map(([formationSlotId, planeSlotId]) => ({ formationSlotId, planeSlotId }))
 }
 
@@ -47,14 +75,13 @@ export default function slotify(
   formation: Formation,
   planes: Plane[],
   planeAssignments: PlaneAssignment[]
-): PlaenSlotAssignment[] {
+): PlaneSlotAssignment[] {
   return planes.flatMap((plane, planeId) => {
     const formationSlotIds = planeAssignments
       .filter(plane => plane.planeId === planeId)
       .map(({ formationSlotId }) => formationSlotId)
 
     const planeSlotAssignments = slotPlane(plane, formation, formationSlotIds)
-
     return planeSlotAssignments.map(({ formationSlotId, planeSlotId }) => ({
       formationSlotId,
       planeId,

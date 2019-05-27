@@ -13,13 +13,12 @@ import {
   updateSlot,
   transitionOut,
   SlotDataFun,
-  baseLabel
+  planeLabel
 } from "./slotdatafuns"
 import { BaseType } from "d3"
 import { planeDrawers, line, PLANE_SCALE_FACTOR } from "./planedrawers"
 import { SlottedPlane } from "./interfaces"
 import { Box } from "../geometry/Box"
-import { ConsoleView } from "react-device-detect"
 
 const planeCoordinates = ({
   planes,
@@ -151,12 +150,32 @@ export default class PlanesDrawer extends AbstractDrawer<PlanesArgs, Box> {
 
     // const label = (d: SlotData) => d.plane.slots[d.planeSlotId].jr.toString()
 
-    const slotsByPlane =
+    const slotsByPlane: SlottedPlane[] =
       args.viewConfig.show === ShowOption.FORMATION
         ? []
-        : Array.from(d3Group(args.slots, d => d.plane)).map(
-            ([plane, slotData]) => ({ plane, slotData })
-          )
+        : Array.from(d3Group(args.slots, d => d.plane))
+            .map(([plane, slotData]) => ({ plane, slotData }))
+            .map(({ plane, slotData }) => {
+              if (plane.hasVideo) {
+                return {
+                  plane,
+                  slotData: [
+                    ...slotData,
+                    {
+                      formationSlotId: -1,
+                      formation: slotData[0].formation,
+                      formationSlot: slotData[0].formationSlot,
+                      planeId: slotData[0].planeId,
+                      plane: plane,
+                      planeSlotId: plane.videoId,
+                      byPlaneSlotId: -1
+                    }
+                  ]
+                }
+              } else {
+                return { plane, slotData }
+              }
+            })
 
     this.group
       .selectAll<SVGGElement, SlottedPlane>("g.plane")
@@ -197,7 +216,7 @@ export default class PlanesDrawer extends AbstractDrawer<PlanesArgs, Box> {
       .transition(t)
       .attr("transform", "scale(1)")
       .call(slotG => {
-        updateSlot(slotG, planeX, planeY, fill, baseLabel(label))
+        updateSlot(slotG, planeX, planeY, fill, planeLabel(label))
       })
 
     const labelBox = drawLabel(this.group, args.formation, t, labelCoord)
@@ -207,10 +226,5 @@ export default class PlanesDrawer extends AbstractDrawer<PlanesArgs, Box> {
         planeDrawers[plane.type].box.translate(p2c.get(plane.position)!)
       )
     }, labelBox)
-
-    //   const c = p2c.get(plane.position)!
-
-    //   return box
-    // }, { x0: 0, y0: 0, x1: 0, y1:0})
   }
 }

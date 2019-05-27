@@ -42,6 +42,8 @@ export interface PlaneState {
   slotting: Slotting
   type: PlaneType
   slots: number
+  hasVideo: boolean
+  hasSuperFloat: boolean
 }
 
 export interface FormationConfigState {

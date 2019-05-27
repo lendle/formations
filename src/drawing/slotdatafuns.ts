@@ -54,11 +54,16 @@ export const labelFunction = (numberBy: NumberOption) => {
 
 /**
  * wraps label, replacing label with "B" for base slots
+ * "V" for video slots
  * @param label label function
  */
-export const baseLabel = (label: SlotDataFun) => (d: SlotData) =>
-  d.formation.baseIds.includes(d.formationSlotId) ? "B" : label(d)
-
+export const planeLabel = (label: SlotDataFun) => (d: SlotData) => {
+  return d.formation.baseIds.includes(d.formationSlotId)
+    ? "B"
+    : d.plane.hasVideo && d.planeSlotId === d.plane.videoId
+    ? "V"
+    : label(d)
+}
 const scaledCoord = (point: Polar, type: FormationType) =>
   (type === FormationType.HD ? point.flip(PI / 2) : point).scale(SCALE_FACTOR)
 

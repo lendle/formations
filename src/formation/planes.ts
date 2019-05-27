@@ -5,40 +5,27 @@ import { TAU } from "../constants"
 import * as d3 from "d3"
 import { PlaneType } from "../store/types"
 
-// abstract class AbstractPlane extends AbstractSlotCollection<PlaneSlot>
-//   implements Plane {
-//   position: PlanePosition
-//   filledSlots: number
-
-//   constructor(position: PlanePosition, filledSlots: number) {
-//     super()
-//     this.position = position
-//     this.filledSlots = filledSlots
-//   }
-
-//   get theta() {
-//     switch (this.position) {
-//       case PlanePosition.LEAD:
-//         return (3 * TAU) / 12
-//       case PlanePosition.LT:
-//         return (7 * TAU) / 12
-//       case PlanePosition.RT:
-//         return (11 * TAU) / 12
-//     }
-//   }
-// }
-
 export class PlaneImpl extends AbstractSlotCollection<PlaneSlot>
   implements Plane {
   position: PlanePosition
   filledSlots: number
   type: PlaneType
+  hasVideo: boolean
+  hasSuperFloat: boolean
 
-  constructor(position: PlanePosition, filledSlots: number, type: PlaneType) {
+  constructor(
+    position: PlanePosition,
+    filledSlots: number,
+    type: PlaneType,
+    hasVideo: boolean,
+    hasSuperFloat: boolean
+  ) {
     super()
     this.position = position
     this.filledSlots = filledSlots
     this.type = type
+    this.hasVideo = hasVideo
+    this.hasSuperFloat = hasSuperFloat
   }
 
   protected computeSlots(): PlaneSlot[] {

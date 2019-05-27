@@ -9,6 +9,10 @@ function cost<A, B>(as: A[], bs: B[], scoreFun: ScoreFun<A, B>) {
   //memoize scoreFun
   const memo = new Map<string, number>()
   return (i: number, j: number): number => {
+    if (i >= as.length) {
+      //it's free to assign nothing from as to any b
+      return 0
+    }
     const key = `${i}.${j}`
     if (!memo.has(key)) {
       const a = as[i]
@@ -20,9 +24,12 @@ function cost<A, B>(as: A[], bs: B[], scoreFun: ScoreFun<A, B>) {
 }
 
 /**
- * takes two arrays of things of equal length and a function that computes a score between a pair of those things
- * and assigns each thing in the first list to a thing in the second list, minimizing the sum of the scores of the assigned pairs
- * an
+ * takes two arrays of things and a function that computes a score between a pair of those things
+ * and assigns each thing in the first array to a thing in the second array,
+ * minimizing the sum of the scores of the assigned pairs
+ *
+ * The second array can be longer than the first,
+ * in which case some things in the second won't get assigned to the first
  * @param as
  * @param bs
  * @param scoreFun
@@ -32,8 +39,8 @@ function lapwrapper<A, B>(
   bs: B[],
   scoreFun: ScoreFun<A, B>
 ): [A, B][] {
-  if (as.length !== bs.length) {
-    throw new Error("as and bs have diff lenghts")
+  if (as.length > bs.length) {
+    throw new Error("as can't be longer than bs")
   }
 
   const badScores = as.flatMap(a =>
@@ -47,11 +54,14 @@ function lapwrapper<A, B>(
     console.warn("Scores should be non-negative and not infinity: ", badScores)
   }
 
-  const result = lap(as.length, cost(as, bs, scoreFun))
+  const result = lap(bs.length, cost(as, bs, scoreFun))
 
   if (
-    !result.row.every(r => r >= 0 && r < as.length) ||
-    new Set(result.row).size != as.length ||
+    //check everything in a got assigned to something in b
+    !result.row.slice(0, as.length).every(r => r >= 0 && r < bs.length) ||
+    //check everything in a has a unique b
+    new Set(result.row.slice(0, as.length)).size != as.length ||
+    //check the computation didn't explode
     result.cost === Infinity
   ) {
     const allScores = as.flatMap(a =>
@@ -62,19 +72,14 @@ function lapwrapper<A, B>(
       result
     })
   }
-  // const assignments = result.col
 
-  // return Array.from(assignments).map((p: number, i: number) => {
-  //   const a = as[p]
-  //   const b = bs[i]
-  //   return [a, b]
-  // })
-
-  return Array.from(result.row).map((p: number, i: number) => {
-    const a = as[i]
-    const b = bs[p]
-    return [a, b]
-  })
+  return Array.from(result.row.slice(0, as.length)).map(
+    (p: number, i: number) => {
+      const a = as[i]
+      const b = bs[p]
+      return [a, b]
+    }
+  )
 }
 
 /**
