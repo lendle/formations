@@ -18,7 +18,8 @@ import {
   ShowOption,
   SET_SHOW,
   REFRESH_STATE,
-  RefreshStateAction
+  RefreshStateAction,
+  SET_PLANE_VIDEO
 } from "./types"
 import PlanePosition from "../formation/PlanePosition"
 
@@ -64,6 +65,15 @@ export const setPlaneSlots = (
   type: SET_PLANE_SLOTS,
   position,
   slots
+})
+
+export const setPlaneVideo = (
+  position: PlanePosition,
+  hasVideo: boolean
+): PlanesConfigActionTypes => ({
+  type: SET_PLANE_VIDEO,
+  position,
+  hasVideo
 })
 
 export const setColorBy = (colorBy: ColorOption): ViewConfigActionTypes => ({

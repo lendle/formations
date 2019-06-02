@@ -22,7 +22,8 @@ import {
   ViewConfigActionTypes,
   SET_SHOW,
   ShowOption,
-  REFRESH_STATE
+  REFRESH_STATE,
+  SET_PLANE_VIDEO
 } from "./types"
 
 const { LEAD, LT, RT } = PlanePosition
@@ -73,6 +74,8 @@ const planesConfig = (
         return { ...p, slots: action.slots }
       case SET_PLANE_TYPE:
         return { ...p, type: action.planeType }
+      case SET_PLANE_VIDEO:
+        return { ...p, hasVideo: action.hasVideo }
       default:
         return p
     }
@@ -80,7 +83,7 @@ const planesConfig = (
 }
 
 const formationConfig = (
-  state = { slots: 42, baseSize: 6, type: FormationType.HD },
+  state = { slots: 45, baseSize: 6, type: FormationType.HU }, //type: FormationType.HD
   action: FormationConfigActionTypes
 ): FormationConfigState => {
   switch (action.type) {

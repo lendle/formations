@@ -78,10 +78,18 @@ interface SetPlaneSlotsAction {
   position: PlanePosition
   slots: number
 }
+
+export const SET_PLANE_VIDEO = "SET_PLANE_VIDEO"
+interface SetPlaneVideoAction {
+  type: typeof SET_PLANE_VIDEO
+  position: PlanePosition
+  hasVideo: boolean
+}
 export type PlanesConfigActionTypes =
   | SetPlaneSlottingAction
   | SetPlaneTypeAction
   | SetPlaneSlotsAction
+  | SetPlaneVideoAction
 
 export const SET_FORMATION_SLOTS = "SET_FORMATION_SLOTS"
 interface SetFormationSlotsAction {

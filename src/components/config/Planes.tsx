@@ -5,7 +5,8 @@ import PlanePosition from "../../formation/PlanePosition"
 import {
   setPlaneSlots,
   setPlaneSlotting,
-  setPlaneType
+  setPlaneType,
+  setPlaneVideo
 } from "../../store/actions"
 import { AppState } from "../../store/reducer"
 import {
@@ -16,11 +17,13 @@ import {
 } from "../../store/types"
 import Select from "./Select"
 import SettingsPanel from "./SettingsPanel"
+import { FormControlLabel, Switch } from "@material-ui/core"
 
 type Setters = {
   onPlaneTypeSet: (plane: PlanePosition, type: PlaneType) => void;
   onPlaneSlotsSet: (plane: PlanePosition, slots: number) => void;
   onPlaneSlottingSet: (plane: PlanePosition, slotting: Slotting) => void;
+  onPlaneVideoSet: (plane: PlanePosition, hasVideo: boolean) => void;
 }
 
 type PlaneMenuProps = {
@@ -36,8 +39,13 @@ const typeDescriptions = {
 
 const PlaneMenu = (props: PlaneMenuProps) => {
   const { planeConfig, setters } = props
-  const { position, label, slotting, type, slots } = planeConfig
-  const { onPlaneSlottingSet, onPlaneTypeSet, onPlaneSlotsSet } = setters
+  const { position, label, slotting, type, slots, hasVideo } = planeConfig
+  const {
+    onPlaneSlottingSet,
+    onPlaneTypeSet,
+    onPlaneSlotsSet,
+    onPlaneVideoSet
+  } = setters
 
   const types =
     position === PlanePosition.LEAD
@@ -77,6 +85,16 @@ const PlaneMenu = (props: PlaneMenuProps) => {
         desc={slottingDescriptions}
         onSet={(s: number) => onPlaneSlottingSet(position, s)}
       />
+      <FormControlLabel
+        control={
+          <Switch
+            checked={hasVideo}
+            onChange={() => onPlaneVideoSet(position, !hasVideo)}
+            color="primary"
+          />
+        }
+        label="Video"
+      />
     </SettingsPanel>
   )
 }
@@ -112,7 +130,9 @@ const mapDispatchToProps = (dispatch: Dispatch<PlanesConfigActionTypes>) => ({
     onPlaneSlotsSet: (plane: PlanePosition, slots: number) =>
       dispatch(setPlaneSlots(plane, slots)),
     onPlaneSlottingSet: (plane: PlanePosition, slotting: Slotting) =>
-      dispatch(setPlaneSlotting(plane, slotting))
+      dispatch(setPlaneSlotting(plane, slotting)),
+    onPlaneVideoSet: (plane: PlanePosition, hasVideo: boolean) =>
+      dispatch(setPlaneVideo(plane, hasVideo))
   }
 })
 
