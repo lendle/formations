@@ -73,45 +73,53 @@ const drawLabel = (
   group: d3.Selection<SVGGElement, {}, null, undefined>,
   formation: Formation,
   t: d3.Transition<d3.BaseType, any, any, any>,
-  labelCoord: Polar
+  labelCoord: Polar,
+  show: ShowOption
 ) => {
   group
     .selectAll<SVGGElement, Formation>("g.label")
-    .data([formation])
-    .join(enter =>
-      enter
-        .append("g")
-        .classed("label", true)
-        .call(g => {
-          g.append("path")
-            .attr("d", line([{ x: 0, y: 0 }, { x: 0, y: -4 }])!)
-            .attr("stroke-width", 3)
-            .attr("stroke", "black")
+    .data(show === ShowOption.PLANES ? [] : [formation])
+    .join(
+      enter =>
+        enter
+          .append("g")
+          .classed("label", true)
+          .call(g => {
+            g.append("path")
+              .attr("d", line([{ x: 0, y: 0 }, { x: 0, y: -4 }])!)
+              .attr("stroke-width", 3)
+              .attr("stroke", "black")
 
-          g.append("path")
-            .attr("d", line([{ x: -1, y: -3 }, { x: 0, y: -4 }])!)
-            .attr("stroke-width", 3)
-            .attr("stroke", "black")
+            g.append("path")
+              .attr("d", line([{ x: -1, y: -3 }, { x: 0, y: -4 }])!)
+              .attr("stroke-width", 3)
+              .attr("stroke", "black")
 
-          g.append("path")
-            .attr("d", line([{ x: 1, y: -3 }, { x: 0, y: -4 }])!)
-            .attr("stroke-width", 3)
-            .attr("stroke", "black")
-          g.append("text")
-            .classed("type", true)
-            .attr("text-anchor", "middle")
-            .attr("dominant-baseline", "central")
-            .attr("x", 0)
-            .attr("y", PLANE_SCALE_FACTOR)
+            g.append("path")
+              .attr("d", line([{ x: 1, y: -3 }, { x: 0, y: -4 }])!)
+              .attr("stroke-width", 3)
+              .attr("stroke", "black")
+            g.append("text")
+              .classed("type", true)
+              .attr("text-anchor", "middle")
+              .attr("dominant-baseline", "central")
+              .attr("x", 0)
+              .attr("y", PLANE_SCALE_FACTOR)
 
-          g.append("text")
-            .classed("slots", true)
-            .attr("text-anchor", "middle")
-            .attr("dominant-baseline", "central")
-            .attr("x", 0)
-            .attr("y", 2 * PLANE_SCALE_FACTOR)
-        })
-        .attr("transform", "translate(0,0) scale(0)")
+            g.append("text")
+              .classed("slots", true)
+              .attr("text-anchor", "middle")
+              .attr("dominant-baseline", "central")
+              .attr("x", 0)
+              .attr("y", 2 * PLANE_SCALE_FACTOR)
+          })
+          .attr("transform", "translate(0,0) scale(0)"),
+      update => update,
+      exit =>
+        exit
+          .transition(t)
+          .attr("transform", "translate(0,0) scale(0)")
+          .remove()
     )
     .call(g => {
       g.select("text.type").text(d => {
@@ -131,9 +139,10 @@ const drawLabel = (
     .transition(t)
     .attr("transform", `translate(${labelCoord.x}, ${labelCoord.y})`)
 
-  const labelBox = new Box(-3, -2, 3, 4)
-    .scale(PLANE_SCALE_FACTOR)
-    .translate(labelCoord)
+  const labelBox =
+    show === ShowOption.PLANES
+      ? new Box(0, 0, 0, 0)
+      : new Box(-3, -2, 3, 4).scale(PLANE_SCALE_FACTOR).translate(labelCoord)
 
   return labelBox
 }
@@ -232,7 +241,13 @@ export default class PlanesDrawer extends AbstractDrawer<PlanesArgs, Box> {
         updateSlot(slotG, planeX, planeY, fill, planeLabel(label))
       })
 
-    const labelBox = drawLabel(this.group, args.formation, t, labelCoord)
+    const labelBox = drawLabel(
+      this.group,
+      args.formation,
+      t,
+      labelCoord,
+      args.viewConfig.show
+    )
 
     return slotsByPlane.reduce((box, { plane }) => {
       return box.union(
