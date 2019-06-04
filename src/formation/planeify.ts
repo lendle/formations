@@ -20,9 +20,6 @@ export default function planeify(
   }
   const LEAD_ID = 0
 
-  //slotted[planeId] = array of slot indexes for plane planeId
-  const slotted = planes.map(() => [] as number[])
-
   // ### rule based slotting ###
   // base in lead f
 
@@ -65,12 +62,6 @@ export default function planeify(
     return Math.min(diff, 2 * PI - diff) + penalty
   }
 
-  //   const distScore = (slotId: number, planeId: number) => {
-  //     const slot = formation.allSlots[slotId]
-  //     const plane = planes[planeId]
-  //     return Math.abs(slot.position.plus(slot.offset).distanceFrom(new Polar(100, plane.theta)))
-  //   }
-
   const unslotted = range(formation.slots.length)
   const planeArray = planes.flatMap((plane, planeId) =>
     (Array(plane.filledSlots) as number[]).fill(planeId)
@@ -82,9 +73,8 @@ export default function planeify(
     combineScoreFuns(baseScores)(angleScore)
   )
 
-  assignments.forEach(([slotId, planeId]) => slotted[planeId].push(slotId))
-
-  return slotted.flatMap((slotIds, planeId) =>
-    slotIds.map(slotId => ({ formationSlotId: slotId, planeId }))
-  )
+  return assignments.map(([formationSlotId, planeId]) => ({
+    formationSlotId,
+    planeId
+  }))
 }

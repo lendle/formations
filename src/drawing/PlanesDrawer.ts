@@ -114,12 +114,8 @@ const drawLabel = (
               .attr("y", 2 * PLANE_SCALE_FACTOR)
           })
           .attr("transform", "translate(0,0) scale(0)"),
-      update => update,
-      exit =>
-        exit
-          .transition(t)
-          .attr("transform", "translate(0,0) scale(0)")
-          .remove()
+      undefined,
+      exit => transitionOut(exit, t)
     )
     .call(g => {
       g.select("text.type").text(d => {
