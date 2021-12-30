@@ -37,7 +37,7 @@ export const fillFunction = (colorBy: ColorOption): SlotDataFun => {
     case ColorOption.RADIAL:
       return radialFill
     default:
-      return () => null
+      return () => d3.schemePaired[0]
   }
 }
 
