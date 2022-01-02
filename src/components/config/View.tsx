@@ -7,16 +7,18 @@ import {
   ViewConfigState,
   ViewConfigActionTypes
 } from "../../store/types"
-import { setColorBy, setNumberBy, setShow } from "../../store/actions"
+import { setColorBy, setNumberBy, setShow, setShowPlaneNumbers } from "../../store/actions"
 import { AppState } from "../../store/reducer"
 import SettingsPanel from "./SettingsPanel"
 import { NumDict } from "../../formation/interfaces"
 import Select from "./Select"
+import { FormGroup, FormControlLabel, Switch } from "@material-ui/core"
 
 type Props = {
   viewConfig: ViewConfigState;
   onSetColorBy: (opt: ColorOption) => void;
   onSetNumberBy: (opt: NumberOption) => void;
+  onSetShowPlaneNumbers: (opt: boolean) => void;
   onSetShow: (opt: ShowOption) => void;
 }
 
@@ -54,7 +56,7 @@ const showOptionDesc: NumDict<string> = {
 }
 
 const View = (props: Props) => {
-  const { viewConfig, onSetColorBy, onSetNumberBy, onSetShow } = props
+  const { viewConfig, onSetColorBy, onSetNumberBy, onSetShowPlaneNumbers, onSetShow } = props
 
   return (
     <React.Fragment>
@@ -83,6 +85,16 @@ const View = (props: Props) => {
           desc={numberByDesc}
           onSet={onSetNumberBy}
         />
+        <FormGroup>
+          <FormControlLabel
+            control={<Switch
+              checked={viewConfig.showPlaneNumbers}
+              color="primary"
+              onChange={() => onSetShowPlaneNumbers(!viewConfig.showPlaneNumbers)}
+            />}
+            label="Show Plane Numbers" />
+        </FormGroup>
+
       </SettingsPanel>
       <SettingsPanel
         name="show"
@@ -108,6 +120,7 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps = (dispatch: Dispatch<ViewConfigActionTypes>) => ({
   onSetColorBy: (colorBy: ColorOption) => dispatch(setColorBy(colorBy)),
   onSetNumberBy: (numberBy: NumberOption) => dispatch(setNumberBy(numberBy)),
+  onSetShowPlaneNumbers: (showPlaneNumbers: boolean) => dispatch(setShowPlaneNumbers(showPlaneNumbers)),
   onSetShow: (show: ShowOption) => dispatch(setShow(show))
 })
 

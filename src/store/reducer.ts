@@ -23,7 +23,8 @@ import {
   SET_SHOW,
   ShowOption,
   REFRESH_STATE,
-  SET_PLANE_VIDEO
+  SET_PLANE_VIDEO,
+  SET_SHOW_PLANE_NUMBERS
 } from "./types"
 
 const { LEAD, LT, RT } = PlanePosition
@@ -102,6 +103,7 @@ const viewConfig = (
   state = {
     colorBy: ColorOption.PLANE,
     numberBy: NumberOption.SLOT_NUM_BY_PLANE,
+    showPlaneNumbers: true,
     show: ShowOption.BOTH
   },
   action: ViewConfigActionTypes
@@ -113,6 +115,8 @@ const viewConfig = (
       return { ...state, numberBy: action.numberBy }
     case SET_SHOW:
       return { ...state, show: action.show }
+    case SET_SHOW_PLANE_NUMBERS:
+      return { ...state, showPlaneNumbers: action.showPlaneNumbers }
     default:
       return state
   }

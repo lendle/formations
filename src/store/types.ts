@@ -54,7 +54,8 @@ export interface FormationConfigState {
 
 export interface ViewConfigState {
   colorBy: ColorOption
-  numberBy: NumberOption
+  numberBy: NumberOption,
+  showPlaneNumbers: boolean,
   show: ShowOption
 }
 
@@ -122,6 +123,12 @@ interface SetNumberByAction {
   numberBy: NumberOption
 }
 
+export const SET_SHOW_PLANE_NUMBERS = "SET_SHOW_PLANE_NUMBERS"
+interface SetShowPlaneNumbersAction {
+  type: typeof SET_SHOW_PLANE_NUMBERS
+  showPlaneNumbers: boolean
+}
+
 export const SET_SHOW = "SET_SHOW"
 interface SetShowAction {
   type: typeof SET_SHOW
@@ -130,6 +137,7 @@ interface SetShowAction {
 export type ViewConfigActionTypes =
   | SetColorByAction
   | SetNumberByAction
+  | SetShowPlaneNumbersAction
   | SetShowAction
 
 export const REFRESH_STATE = "REFRESH_STATE"

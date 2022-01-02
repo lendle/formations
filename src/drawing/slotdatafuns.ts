@@ -57,13 +57,15 @@ export const labelFunction = (numberBy: NumberOption) => {
  * "V" for video slots
  * @param label label function
  */
-export const planeLabel = (label: SlotDataFun) => (d: SlotData) => {
-  return d.formation.baseIds.includes(d.formationSlotId)
-    ? "B"
-    : d.plane.hasVideo && d.planeSlotId === d.plane.videoId
-      ? "V"
-      : label(d)
-}
+export const planeLabel = (label: SlotDataFun, showPlaneNumbers: boolean) =>
+  !showPlaneNumbers ? (_: SlotData) => "" :
+    (d: SlotData) => {
+      return d.formation.baseIds.includes(d.formationSlotId)
+        ? "B"
+        : d.plane.hasVideo && d.planeSlotId === d.plane.videoId
+          ? "V"
+          : label(d)
+    }
 const scaledCoord = (point: Polar, type: FormationType) =>
   (type === FormationType.HD ? point.flip(PI / 2) : point).scale(SCALE_FACTOR)
 

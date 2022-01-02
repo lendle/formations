@@ -19,7 +19,8 @@ import {
   SET_SHOW,
   REFRESH_STATE,
   RefreshStateAction,
-  SET_PLANE_VIDEO
+  SET_PLANE_VIDEO,
+  SET_SHOW_PLANE_NUMBERS
 } from "./types"
 import PlanePosition from "../formation/PlanePosition"
 
@@ -84,6 +85,11 @@ export const setColorBy = (colorBy: ColorOption): ViewConfigActionTypes => ({
 export const setNumberBy = (numberBy: NumberOption): ViewConfigActionTypes => ({
   type: SET_NUMBER_BY,
   numberBy
+})
+
+export const setShowPlaneNumbers = (showPlaneNumbers: boolean): ViewConfigActionTypes => ({
+  type: SET_SHOW_PLANE_NUMBERS,
+  showPlaneNumbers
 })
 
 export const setShow = (show: ShowOption): ViewConfigActionTypes => ({

@@ -156,7 +156,7 @@ export default class PlanesDrawer extends AbstractDrawer<PlanesArgs, Box> {
     const p2c = planeCoordinates(args)
     const labelCoord = labelPosition(args)
 
-    const { fill, label } = args
+    const { fill, label, viewConfig: { showPlaneNumbers } } = args
 
     // const label = (d: SlotData) => d.plane.slots[d.planeSlotId].jr.toString()
 
@@ -234,7 +234,7 @@ export default class PlanesDrawer extends AbstractDrawer<PlanesArgs, Box> {
       .transition(t)
       .attr("transform", "scale(1)")
       .call(slotG => {
-        updateSlot(slotG, planeX, planeY, fill, planeLabel(label))
+        updateSlot(slotG, planeX, planeY, fill, planeLabel(label, showPlaneNumbers))
       })
 
     const labelBox = drawLabel(
