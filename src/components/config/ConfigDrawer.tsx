@@ -8,7 +8,7 @@ import Typography from "@material-ui/core/Typography"
 import MenuIcon from "@material-ui/icons/Menu"
 import RefreshIcon from "@material-ui/icons/Refresh"
 
-import { makeStyles } from "@material-ui/styles"
+import { makeStyles } from "@material-ui/core/styles"
 import React from "react"
 import Panels from "./Panels"
 import { RefreshStateAction } from "../../store/types"

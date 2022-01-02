@@ -202,10 +202,10 @@ class FormationImpl extends AbstractSlotCollection<FormationSlot>
           this.type === FormationType.HU
             ? s
             : {
-                ...s,
-                position: s.position.flip(PI / 2),
-                offset: s.offset.flip(PI / 2)
-              }
+              ...s,
+              position: s.position.flip(PI / 2),
+              offset: s.offset.flip(PI / 2)
+            }
         return { ...adjustedSlot, reverseBuildOrder: reverseBuildOrder[idx] }
       })
   }
@@ -238,23 +238,24 @@ class FormationImpl extends AbstractSlotCollection<FormationSlot>
 
     this.components
       .flatMap(child => child.parents().map(parent => ({ parent, child }))) //get all parent child pairs (many to many)
-      .forEach(({ parent, child }) =>
-        parentToChildren.get(parent)!.push(child)
-      )
+      .forEach(({ parent, child }) => {
+        const children = parentToChildren.get(parent) as Component[]
+        children.push(child)
+      })
 
     const componentToWaiting = new Map<Component, number>()
 
     const waiting = (component: Component): number => {
       if (!componentToWaiting.has(component)) {
-        const children = parentToChildren.get(component)!
+        const children = parentToChildren.get(component) as Component[]
         const numWaiting = Math.max(
-          ...children.map(child => waiting(child)! + child.maxBuildOrder()),
+          ...children.map(child => waiting(child) + child.maxBuildOrder()),
           0
         )
 
         componentToWaiting.set(component, numWaiting)
       }
-      return componentToWaiting.get(component)!
+      return componentToWaiting.get(component) as number
     }
     // waiting(this.components[0])
     return this.components.flatMap(c => {

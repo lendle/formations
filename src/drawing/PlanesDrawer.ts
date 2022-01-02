@@ -164,36 +164,36 @@ export default class PlanesDrawer extends AbstractDrawer<PlanesArgs, Box> {
       args.viewConfig.show === ShowOption.FORMATION
         ? []
         : Array.from(d3Group(args.slots, d => d.plane))
-            .map(([plane, slotData]) => ({ plane, slotData }))
-            .map(({ plane, slotData }) => {
-              // add in psuedo slot for video if plane has it
+          .map(([plane, slotData]) => ({ plane, slotData }))
+          .map(({ plane, slotData }) => {
+            // add in psuedo slot for video if plane has it
 
-              const dummyFormationSlot: FormationSlot = {
-                reverseBuildOrder: 0,
-                buildOrder: 0,
-                offset: new Polar(0, 0),
-                position: new Polar(0, 0),
-                dockAngle: 0
-              }
-              const videoSlot = {
-                formationSlotId: -1,
-                formation: args.formation,
-                formationSlot: dummyFormationSlot,
-                planeId: slotData[0] ? slotData[0].planeId : -1,
-                plane: plane,
-                planeSlotId: plane.videoId,
-                byPlaneSlotId: -1
-              }
+            const dummyFormationSlot: FormationSlot = {
+              reverseBuildOrder: 0,
+              buildOrder: 0,
+              offset: new Polar(0, 0),
+              position: new Polar(0, 0),
+              dockAngle: 0
+            }
+            const videoSlot = {
+              formationSlotId: -1,
+              formation: args.formation,
+              formationSlot: dummyFormationSlot,
+              planeId: slotData[0] ? slotData[0].planeId : -1,
+              plane: plane,
+              planeSlotId: plane.videoId,
+              byPlaneSlotId: -1
+            }
 
-              if (plane.hasVideo) {
-                return {
-                  plane,
-                  slotData: [...slotData, videoSlot]
-                }
-              } else {
-                return { plane, slotData }
+            if (plane.hasVideo) {
+              return {
+                plane,
+                slotData: [...slotData, videoSlot]
               }
-            })
+            } else {
+              return { plane, slotData }
+            }
+          })
 
     this.group
       .selectAll<SVGGElement, SlottedPlane>("g.plane")

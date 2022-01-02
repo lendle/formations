@@ -1,12 +1,12 @@
 import React from "react"
-import { makeStyles } from "@material-ui/styles"
+import { makeStyles } from "@material-ui/core/styles"
 import { FormControl, InputLabel, Select, MenuItem } from "@material-ui/core"
 import { isMobile } from "react-device-detect"
 import { NumDict } from "../../formation/interfaces"
 
 const useStyles = makeStyles(theme => ({
   root: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(),
     minWidth: 180
   }
 }))
@@ -18,10 +18,10 @@ function makeOpts(opts: number[], desc?: NumDict<string>) {
         {desc ? desc[opt] : opt}
       </option>
     ) : (
-      <MenuItem key={opt} value={opt}>
-        {desc ? desc[opt] : opt}
-      </MenuItem>
-    )
+        <MenuItem key={opt} value={opt}>
+          {desc ? desc[opt] : opt}
+        </MenuItem>
+      )
   )
 }
 
@@ -40,7 +40,7 @@ export default (props: Props) => {
       <InputLabel>{label}</InputLabel>
       <Select
         value={value}
-        onChange={e => onSet(parseInt(e.target.value))}
+        onChange={e => onSet(parseInt(e.target.value as string))}
         native={isMobile}
       >
         {makeOpts(opts, desc)}

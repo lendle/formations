@@ -23,7 +23,7 @@ interface FormationProps {
 export default class FormationComponent extends React.Component<
   FormationProps,
   {}
-> {
+  > {
   svg!: d3.Selection<SVGSVGElement, {}, null, undefined>
   allGrp!: d3.Selection<SVGGElement, {}, null, undefined>
   wrapper!: d3.Selection<SVGGElement, {}, null, undefined>
@@ -100,7 +100,7 @@ export default class FormationComponent extends React.Component<
           .translate(this.width() / 2, this.height() / 2)
           .scale(
             Math.min(this.width() / box.width, this.height() / box.height) *
-              0.95
+            0.95
           )
       )
   }

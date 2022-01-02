@@ -20,8 +20,8 @@ const planeFill = (d: SlotData) =>
   d3
     .scaleOrdinal(d3.schemePaired.filter((_, i) => [0, 2, 4].includes(i)))
     .domain([PlanePosition.LEAD, PlanePosition.LT, PlanePosition.RT])(
-    d.plane.position
-  )
+      d.plane.position
+    )
 
 const radialFill = ({ formationSlot }: SlotData) => {
   const theta = formationSlot.offset.plus(formationSlot.position).theta / TAU
@@ -61,8 +61,8 @@ export const planeLabel = (label: SlotDataFun) => (d: SlotData) => {
   return d.formation.baseIds.includes(d.formationSlotId)
     ? "B"
     : d.plane.hasVideo && d.planeSlotId === d.plane.videoId
-    ? "V"
-    : label(d)
+      ? "V"
+      : label(d)
 }
 const scaledCoord = (point: Polar, type: FormationType) =>
   (type === FormationType.HD ? point.flip(PI / 2) : point).scale(SCALE_FACTOR)
@@ -176,7 +176,7 @@ export const addSlot = <E extends BaseType>(
 }
 
 export const updateSlot = (
-  g: d3.Transition<SVGGElement, SlotData, SVGGElement, {}>,
+  g: d3.Transition<SVGGElement, SlotData, SVGGElement, unknown>,
   x: SlotDataFun,
   y: SlotDataFun,
   fill: SlotDataFun,

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { Drawer } from "./interfaces"
 
 export default abstract class AbstractDrawer<Args, ReturnArgs>

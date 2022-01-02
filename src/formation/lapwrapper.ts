@@ -19,7 +19,7 @@ function cost<A, B>(as: A[], bs: B[], scoreFun: ScoreFun<A, B>) {
       const b = bs[j]
       memo.set(key, scoreFun(a, b))
     }
-    return memo.get(key)!
+    return memo.get(key) as number
   }
 }
 
@@ -60,7 +60,7 @@ function lapwrapper<A, B>(
     //check everything in a got assigned to something in b
     !result.row.slice(0, as.length).every(r => r >= 0 && r < bs.length) ||
     //check everything in a has a unique b
-    new Set(result.row.slice(0, as.length)).size != as.length ||
+    new Set(result.row.slice(0, as.length)).size !== as.length ||
     //check the computation didn't explode
     result.cost === Infinity
   ) {

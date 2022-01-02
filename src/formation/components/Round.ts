@@ -117,7 +117,7 @@ export default class Round extends Component {
       console.error(`d: ${d}, s: ${s}`)
       throw new Error("d must be in [0, s]")
     }
-    var iters = 0
+    let iters = 0
     //try picking theta between lower and upper
     function iter(lower = 0, upper = PI): number {
       if (iters >= 100) {

@@ -1,6 +1,6 @@
 import { FormControl, Typography } from "@material-ui/core"
-import Slider from "@material-ui/lab/Slider"
-import { makeStyles } from "@material-ui/styles"
+import Slider from "@material-ui/core/Slider"
+import { makeStyles } from "@material-ui/core/styles"
 import * as d3 from "d3"
 import React, { Dispatch } from "react"
 import { isMobile } from "react-device-detect"
@@ -22,11 +22,11 @@ const useStyles = makeStyles(theme => ({
     alignItems: "center"
   },
   slider: {
-    paddingLeft: theme.spacing.unit,
-    paddingRight: theme.spacing.unit
+    paddingLeft: theme.spacing(),
+    paddingRight: theme.spacing()
   },
   formControl: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(),
     minWidth: 180
   }
 }))
@@ -73,24 +73,24 @@ const Slots: React.FunctionComponent<Props> = (props: Props) => {
       onSet={onFormationSlotsSet}
     />
   ) : (
-    <FormControl className={classes.formControl}>
-      <Typography variant="caption" gutterBottom>
-        Slots
+      <FormControl className={classes.formControl}>
+        <Typography variant="caption" gutterBottom>
+          Slots
       </Typography>
-      <div className={classes.slots}>
-        <Typography>{min}</Typography>
-        <Slider
-          min={min}
-          max={max}
-          value={slots}
-          step={1}
-          className={classes.slider}
-          onChange={(_, value) => onFormationSlotsSet(value)}
-        />
-        <Typography>{max}</Typography>
-      </div>
-    </FormControl>
-  )
+        <div className={classes.slots}>
+          <Typography>{min}</Typography>
+          <Slider
+            min={min}
+            max={max}
+            value={slots}
+            step={1}
+            className={classes.slider}
+            onChange={(_, value) => onFormationSlotsSet(value as number)}
+          />
+          <Typography>{max}</Typography>
+        </div>
+      </FormControl>
+    )
 
   return (
     <React.Fragment>

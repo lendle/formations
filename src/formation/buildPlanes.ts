@@ -135,7 +135,7 @@ export default (
     ({ position, type, hasVideo, hasSuperFloat }) =>
       new PlaneImpl(
         position,
-        slotsMap.get(position)!,
+        slotsMap.get(position) as number,
         type,
         hasVideo,
         hasSuperFloat

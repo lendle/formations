@@ -6,7 +6,7 @@ type PanelContextType = {
 }
 export default React.createContext<PanelContextType>({
   expanded: "",
-  setExpanded: (_: String) => {
+  setExpanded: (_: string) => {
     return
   }
 })
