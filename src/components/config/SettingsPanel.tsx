@@ -1,11 +1,9 @@
-import ExpansionPanel from "@material-ui/core/ExpansionPanel"
-import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails"
-import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary"
 import Typography from "@material-ui/core/Typography"
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
 import { makeStyles } from "@material-ui/core/styles"
 import React, { ReactNode, useContext } from "react"
 import PanelContext from "./PanelContext"
+import { Accordion, AccordionSummary, AccordionDetails } from "@material-ui/core"
 
 const useStyles = makeStyles(theme => ({
   heading: {
@@ -42,17 +40,17 @@ const SettingsPanel = (props: Props) => {
   }
 
   return (
-    <ExpansionPanel expanded={expanded === name} onChange={handleChange} square>
-      <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+    <Accordion expanded={expanded === name} onChange={handleChange} square>
+      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <Typography className={classes.heading}>{heading1}</Typography>
         <Typography className={classes.secondaryHeading}>{heading2}</Typography>
-      </ExpansionPanelSummary>
-      <ExpansionPanelDetails>
+      </AccordionSummary>
+      <AccordionDetails>
         <form className={classes.form} autoComplete="off">
           {children}
         </form>
-      </ExpansionPanelDetails>
-    </ExpansionPanel>
+      </AccordionDetails>
+    </Accordion>
   )
 }
 
