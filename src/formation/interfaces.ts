@@ -5,7 +5,7 @@ import { Box } from "../geometry/Box"
 
 export type NumDict<V> = { [index: number]: V }
 
-export interface BaseSlot {}
+export interface BaseSlot { }
 
 export interface PlaneAssignment {
   formationSlotId: number

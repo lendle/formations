@@ -4,8 +4,8 @@ import { y } from "./slotdatafuns"
 import { Box } from "../geometry/Box"
 
 export interface Drawer<Args, ReturnArgs> {
-  group: d3.Selection<SVGGElement, {}, null, undefined>
-  withGroup(element: d3.Selection<SVGGElement, {}, null, undefined>): this
+  group: d3.Selection<SVGGElement, unknown, null, undefined>
+  withGroup(element: d3.Selection<SVGGElement, unknown, null, undefined>): this
   draw(args: Args, transition: any | undefined): ReturnArgs
 }
 

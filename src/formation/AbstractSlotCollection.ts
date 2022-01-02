@@ -1,5 +1,4 @@
-import { BaseSlot, SlotCollection, NumDict } from "./interfaces"
-import arrayToDict from "../util/arrayToDict"
+import { BaseSlot, SlotCollection } from "./interfaces"
 
 export default abstract class AbstractSlotCollection<S extends BaseSlot>
   implements SlotCollection<S> {

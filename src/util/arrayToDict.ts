@@ -1,4 +1,4 @@
-type NumDict<V> = { [index: number]: V }
+import { NumDict } from "../formation/interfaces"
 
 // function arrayToDict<V extends { K: number }, K extends keyof V>(array: V[], key:K): NumDict<V>
 function arrayToDict<V>(array: V[], keyFun: (item: V) => number): NumDict<V>
@@ -13,7 +13,7 @@ function arrayToDict<T, V>(
   keyFun: (item: T) => number,
   valueFun?: (item: T) => V
 ): NumDict<V> {
-  const _valueFun = valueFun ? valueFun : (item: T) => item
+  const _valueFun = valueFun ? valueFun : (item: T) => item as unknown as V //TODO
   return array.reduce(
     (obj: NumDict<V>, item: T) => ({ ...obj, [keyFun(item)]: _valueFun(item) }),
     {}

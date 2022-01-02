@@ -1,7 +1,7 @@
 import Polar from "../../geometry/Polar"
 
 import { range } from "d3"
-import { FormationSlot, ComponentSlot } from "../interfaces"
+import { ComponentSlot } from "../interfaces"
 
 export default abstract class Component {
   slots: number

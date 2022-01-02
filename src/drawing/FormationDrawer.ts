@@ -24,10 +24,10 @@ interface FormationArgs {
 export default class FormationDrawer extends AbstractDrawer<
   FormationArgs,
   Box
-> {
+  > {
   draw(
     { slots, viewConfig, fill, label }: FormationArgs,
-    t: Transition<BaseType, any, any, any>
+    t: Transition<BaseType, unknown, any, any>
   ) {
     const slotData: SlotData[] =
       viewConfig.show === ShowOption.PLANES ? [] : slots

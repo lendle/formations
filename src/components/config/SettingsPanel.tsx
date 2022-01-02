@@ -35,7 +35,7 @@ const SettingsPanel = (props: Props) => {
   const classes = useStyles()
   const { name, children, heading1, heading2 } = props
   const { expanded, setExpanded } = useContext(PanelContext)
-  const handleChange = (event: React.ChangeEvent<{}>, isExpanded: boolean) => {
+  const handleChange = (_event: React.ChangeEvent<unknown>, isExpanded: boolean) => {
     setExpanded(isExpanded ? name : "")
   }
 

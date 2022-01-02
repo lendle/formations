@@ -70,7 +70,7 @@ const labelPosition = ({ formation: { radius, type } }: PlanesArgs) => {
 }
 
 const drawLabel = (
-  group: d3.Selection<SVGGElement, {}, null, undefined>,
+  group: d3.Selection<SVGGElement, unknown, null, undefined>,
   formation: Formation,
   t: d3.Transition<d3.BaseType, any, any, any>,
   labelCoord: Polar,
